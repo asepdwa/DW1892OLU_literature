@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext, useEffect, Suspense } from "react";
+import { ReactQueryConfigProvider } from "react-query";
+import AppRouter from "./Routes/Router";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import "./Assets/App.css";
+import { LoginContext } from "./Context/Login";
+import { API, setAuthToken } from "./Config/Api";
+
+import LoadingScreen from "./Component/LoadingScreen";
+
+const queryConfig = {
+  suspense: true,
+};
+
+if (localStorage.token) {
+  setAuthToken(localStorage.token);
 }
 
-export default App;
+export default function App() {
+  // eslint-disable-next-line
+  const [state, dispatch] = useContext(LoginContext);
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const res = await API.get("/auth");
+
+        dispatch({
+          type: "LOAD_USER",
+          payload: res.data.data,
+        });
+      } catch (err) {
+        dispatch({
+          type: "AUTH_ERROR",
+        })
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  return (
+    <ReactQueryConfigProvider config={queryConfig}>
+      <Suspense fallback={<LoadingScreen />}>
+        <AppRouter />
+      </Suspense>
+    </ReactQueryConfigProvider>
+  );
+}

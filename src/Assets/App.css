@@ -1,0 +1,260 @@
+.App {
+  position: absolute;
+  width: 100%;
+  background-color: #161616;
+}
+
+.FormTitle {
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 49px;
+}
+
+.quote {
+  font-family: Times New Roman;
+  font-weight: bold;
+  font-size: 90px;
+  line-height: 82.49%;
+  color: white;
+  text-shadow: 2px 2px black;
+}
+
+.note {
+  color: white;
+  font-size: 20px;
+  margin-top: 30px;
+  line-height: 32px;
+  text-shadow: 1.5px 1.5px black;
+}
+
+.quote-md {
+  font-family: Times New Roman;
+  font-weight: bold;
+  font-size: 72px;
+  color: black;
+  line-height: 90%;
+}
+
+.note-md {
+  color: black;
+  font-size: 20px;
+  margin-top: 30px;
+  line-height: 85%;
+}
+
+.navbar-brand {
+  font-family: Times New Roman;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 50px;
+  line-height: 41px;
+  text-decoration: none;
+  color: white;
+}
+
+.App-header {
+  font-family: Times New Roman;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 41px;
+  text-decoration: none;
+  color: black;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.Profile img {
+  border-radius: 50%;
+  width: 100px;
+  height: auto;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.15));
+  border: 3px solid #ffffff;
+  box-sizing: border-box;
+}
+
+.Profile p {
+  font-family: Helvetica;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.Profile .role {
+  font-family: Helvetica;
+  font-style: italic;
+  font-weight: 550;
+  font-size: 15px;
+  color: white;
+  background-color: #ee4622;
+  height: 20px;
+  width: 100px;
+  border-radius: 5px;
+}
+
+.Profile hr {
+  width: 75%;
+  margin-bottom: 15px;
+  border: 1px solid #c9c9c9;
+}
+
+.Profile button {
+  width: 75%;
+  height: 60px;
+  border-radius: 60px;
+  color: #929292;
+  font-weight: 400;
+  font-size: 24px;
+  white-space: nowrap;
+  background: transparent;
+  border: 1px solid transparent;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+.Profile button:hover {
+  color: white;
+  background-color: #ee4622;
+}
+
+.Profile button:focus {
+  color: white;
+  background-color: #ee4622;
+  outline: none;
+}
+
+.btn-custom {
+  width: 65%;
+  height: 40px;
+  margin: auto;
+  margin-top: 10px;
+  display: block;
+  color: #929292;
+  font-size: 15px;
+  white-space: nowrap;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background-color: #af2e1c;
+  color: white;
+}
+
+.btn-custom:focus {
+  outline: none;
+}
+
+.HomeTop {
+  background-color: #e6f2fd;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.ProfileBox {
+  background-color: #252525;
+  border-radius: 30px;
+  padding: 20px;
+}
+
+.list-book {
+  width: 80%;
+  margin: auto;
+  display: block;
+}
+
+.list-book img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.list-book h4 {
+  font-family: Times New Roman;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 120.5%;
+}
+
+.list-book p {
+  color: #929292;
+}
+
+.list-title {
+  font-family: Times New Roman;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 35px;
+  line-height: 101.5%;
+  padding-left: 10px;
+}
+
+.ProfileRow {
+  color: white;
+  display: inline-flex;
+  flex-direction: column;
+  margin-left: 10px;
+  margin-top: -15px;
+  margin-bottom: 20px;
+}
+
+.ProfileRow .profile-data {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 15px;
+  margin: 0;
+}
+
+.ProfileRow .profile-note {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  color: #8a8c90;
+  margin: 0;
+}
+
+.detail-data {
+  color: #929292;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.detail-type {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.modalFooter {
+  margin-top: 15px;
+  margin-bottom: 0;
+  font-size: 15px;
+  text-align: center;
+}
+
+.need-confirm {
+  width: 85%;
+  height: 98%;
+  position: absolute;
+  background: rgba(196, 196, 196, 0.7);
+  border-radius: 10px;
+  margin: auto;
+  display: block;
+  z-index: 9;
+}
+
+.need-confirm p {
+  margin-top: 50%;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  color: #ffd600;
+  background-color: white;
+  text-shadow: 0.5px 0.5px black;
+}
