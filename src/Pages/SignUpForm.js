@@ -1,147 +1,143 @@
 import React, { useState } from "react";
-import { useMutation } from "react-query"
-import { Button, Form } from "react-bootstrap";
+import { useMutation } from "react-query";
+import { FaExclamationTriangle } from "react-icons/fa";
 
-import { API } from "../Config/Api"
+import { API } from "../Config/Api";
+import CustomInput, { CustomSelect } from "../Component/CustomInput";
+import LoadingScreen from "../Component/LoadingScreen";
+
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 export default function SignUpForm(props) {
-  // eslint-disable-next-line
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    fullName: "",
-    gender: "Male",
-    phone: "",
-    address: "",
-    role: "Guest",
+  const [message, setMessage] = useState({
+    error: false,
+    fill: "",
+  })
+
+  const { handleSubmit, getFieldProps, errors, touched } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      fullName: "",
+      gender: "",
+      phone: "",
+      address: "",
+      role: "Guest",
+    },
+
+    validationSchema: yup.object({
+      email: yup.string().required().min(6).email(),
+      password: yup.string().required().min(6),
+      fullName: yup.string().required().min(3),
+      phone: yup.number().required().min(6),
+      gender: yup.string().required(),
+      address: yup.string().required().min(10),
+    }),
+
+    onSubmit: (values) => {
+      handleSignUp(values);
+    },
   });
 
-  const {
-    email,
-    password,
-    fullName,
-    gender,
-    phone,
-    address,
-    role,
-  } = formData;
+  const [handleSignUp, { isLoading, error }] = useMutation(async (values) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const [handleSubmit] = useMutation(async () => {
-    if (
-      email.length > 4 &&
-      password.length > 4 &&
-      fullName.length > 4 &&
-      phone.length > 4 &&
-      address.length > 4
-    ) {
-      try {
-        const config = {
-          headers: {
-            "content-type": "application/json",
-          },
-        };
-
-        const res = await API.post("/signup", formData, config)
-        alert(res.data.message);
-        props.Modal();
-      } catch (error) {
-        alert(error.response.data.error.message)
-      }
-    } else {
-      alert("Fill in the form correctly ...");
+      const body = values;
+      const res = await API.post("/signup", body, config);
+      setMessage({ error: false, fill: res.data.message });
+    } catch (err) {
+      console.log(err);
+      setMessage({ error: true, fill: err.response.data.error.message });
     }
   });
 
   return (
-    <>
-      <Form
-        style={{
-          padding: 10,
-          paddingTop: 20,
-          paddingBottom: 30,
-          borderRadius: 10,
-        }}
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-      >
-        <Form.Group>
-          <h3 className="FormTitle">Sign Up</h3>
-        </Form.Group>
-        <Form.Group controlId="email">
-          <Form.Control
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => handleChange(e)}
-          />
-        </Form.Group>
-        <Form.Group controlId="password">
-          <Form.Control
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => handleChange(e)}
-          />
-        </Form.Group>
-        <Form.Group controlId="formBasicFullName">
-          <Form.Control
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => handleChange(e)}
-          />
-        </Form.Group>
-        <Form.Group controlId="gender">
-          <Form.Control
-            as="select"
-            name="gender"
-            value={gender}
-            onChange={(e) => handleChange(e)}
-          >
-            <option selected="selected" value="Male">
-              Male
-            </option>
-            <option value="Female">Female</option>
-          </Form.Control>
-        </Form.Group>
-        <Form.Group controlId="phone">
-          <Form.Control
-            type="text"
-            name="phone"
-            placeholder="Phone"
-            value={phone}
-            onChange={(e) => handleChange(e)}
-          />
-        </Form.Group>
-        <Form.Group controlId="address">
-          <Form.Control
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={address}
-            onChange={(e) => handleChange(e)}
-          />
-        </Form.Group>
-        <Button
-          variant="danger"
-          type="submit"
-          style={{ width: "100%", background: "#EE4622" }}
+    <form
+      style={{
+        padding: 10,
+        paddingTop: 20,
+        paddingBottom: 30,
+      }}
+      onSubmit={handleSubmit}
+    >
+      <div className="form-group">
+        <h3 className="FormTitle">Sign Up</h3>
+      </div>
+      {(message.fill !== "" || error) && (
+        <div
+          className={(message.error || error) ? "alert alert-danger" : "alert alert-success"}
         >
-          Sign Up
-        </Button>
-        <p className="modalFooter">
-          Already have an account ? <b onClick={props.Modal}>Click Here</b>
-        </p>
-      </Form>
-    </>
+          <center>{(message.error || error) && <FaExclamationTriangle size={25} />} <b>{message.fill || error}</b></center>
+        </div>
+      )}
+      <CustomInput
+        type="email"
+        name="email"
+        placeholder="Email"
+        {...getFieldProps("email")}
+        error={touched.email ? errors.email : ""}
+      />
+      <CustomInput
+        type="password"
+        name="password"
+        placeholder="Password"
+        {...getFieldProps("password")}
+        error={touched.password ? errors.password : ""}
+      />
+      <CustomInput
+        type="text"
+        name="fullName"
+        placeholder="Name"
+        {...getFieldProps("fullName")}
+        error={touched.fullName ? errors.fullName : ""}
+      />
+      <CustomSelect
+        type="text"
+        name="gender"
+        {...getFieldProps("gender")}
+        error={touched.gender ? errors.gender : ""}
+      >
+        <option>
+          Select your gender
+            </option>
+        <option value="Male">
+          Male
+            </option>
+        <option value="Female">Female</option>
+      </CustomSelect>
+      <CustomInput
+        type="text"
+        name="phone"
+        placeholder="Phone"
+        {...getFieldProps("phone")}
+        error={touched.phone ? errors.phone : ""}
+      />
+      <CustomInput
+        type="text"
+        name="address"
+        placeholder="Address"
+        {...getFieldProps("address")}
+        error={touched.address ? errors.address : ""}
+      />
+      {isLoading ? <LoadingScreen size="2.5rem" />
+        : (
+          <button
+            className="btn btn-danger"
+            type="submit"
+            style={{ width: "100%", background: "#af2e1c" }}
+          >
+            Sign Up
+          </button>
+        )}
+      <p className="modalFooter">
+        Already have an account ? <b onClick={props.Modal}>Click Here</b>
+      </p>
+    </form>
   );
 }

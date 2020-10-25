@@ -1,106 +1,134 @@
 import React, { useContext, useState } from "react";
-import { Button, Form } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { FaExclamationTriangle } from "react-icons/fa";
+import { useMutation } from "react-query";
+
 import { LoginContext } from "../Context/Login";
 import { API, setAuthToken } from "../Config/Api";
+import CustomInput from "../Component/CustomInput";
+import LoadingScreen from "../Component/LoadingScreen";
+
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 export default function SignIn(props) {
   // eslint-disable-next-line
   const [state, dispatch] = useContext(LoginContext);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const [message, setMessage] = useState({
+    error: false,
+    fill: "",
+  })
+
+  const { handleSubmit, getFieldProps, errors, touched } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+
+    validationSchema: yup.object({
+      email: yup.string().required().min(6).email(),
+      password: yup.string().required().min(6),
+    }),
+
+    onSubmit: (values) => {
+      handleLogin(values);
+    },
   });
-  const { email, password } = formData;
+
   const history = useHistory();
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    const body = JSON.stringify({ email, password });
-
+  const [handleLogin, { isLoading, error }] = useMutation(async (values) => {
     try {
-      const res = await API.post("/signin", body, config);
-
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: res.data.data,
-      });
-
-      setAuthToken(res.data.data.token);
-      alert(res.data.message);
-      history.push("/Home")
-
       try {
-        const resAuth = await API.get("/auth");
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        const body = values;
+        const res = await API.post("/signin", body, config);
 
         dispatch({
-          type: "LOAD_USER",
-          payload: resAuth.data.data,
+          type: "LOGIN_SUCCESS",
+          payload: res.data.data,
         });
 
-      } catch (error) {
+        setMessage({ error: false, fill: res.data.message });
+        setAuthToken(res.data.data.token);
+
+        try {
+          const resAuth = await API.get("/auth");
+          dispatch({
+            type: "LOAD_USER",
+            payload: resAuth.data.data,
+          });
+        } catch (err) {
+          dispatch({
+            type: "AUTH_ERROR",
+          });
+        }
+
+        history.push("/Home");
+
+      } catch (err) {
         dispatch({
-          type: "AUTH_ERROR",
+          type: "LOGIN_FAILED",
         });
+        setMessage({ error: true, fill: err.response.data.error.message });
       }
-
     } catch (err) {
-      alert(err.response.data.error.message)
-      dispatch({
-        type: "LOGIN_FAILED",
-      });
+      console.log(err);
+      setMessage({ error: true, fill: err.response.data.error.message });
     }
-  };
+  });
 
   return (
-    <Form
+    <form
       style={{
         padding: 10,
         paddingTop: 20,
         paddingBottom: 30,
-        borderRadius: 10,
       }}
-      onSubmit={(e) => handleSubmit(e)}
+      onSubmit={handleSubmit}
     >
-      <Form.Group>
+      {(message.fill !== "" || error) && (
+        <div
+          className={(message.error || error) ? "alert alert-danger" : "alert alert-success"}
+        >
+          <center>{(message.error || error) && <FaExclamationTriangle size={25} />} <b>{message.fill || error}</b></center>
+        </div>
+      )}
+      <div className="form-group">
         <h3 className="FormTitle">Sign In</h3>
-      </Form.Group>
-      <Form.Group controlId="formBasicEmail">
-        <Form.Control
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={(e) => handleChange(e)}
-        />
-      </Form.Group>
-      <Form.Group controlId="formBasicPassword" style={{ paddingBottom: 15 }}>
-        <Form.Control
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={(e) => handleChange(e)}
-        />
-      </Form.Group>
-      <Button
-        variant="danger"
-        type="submit"
-        style={{ width: "100%", background: "#EE4622" }}
-      >
-        Sign In
-        </Button>
+      </div>
+      <CustomInput
+        type="email"
+        name="email"
+        placeholder="Email"
+        {...getFieldProps("email")}
+        error={touched.email ? errors.email : ""}
+      />
+      <CustomInput
+        type="password"
+        name="password"
+        placeholder="password"
+        {...getFieldProps("password")}
+        error={touched.password ? errors.password : ""}
+      />
+      {isLoading ? <LoadingScreen size="2.5rem" />
+        : (
+          <button
+            className="btn btn-danger"
+            type="submit"
+            style={{ width: "100%", background: "#af2e1c" }}
+          >
+            Sign In
+          </button>
+        )}
+
       <p className="modalFooter">
         Don't have an account ? <b onClick={props.Modal}>Click Here</b>
       </p>
-    </Form>
+    </form>
   );
 }

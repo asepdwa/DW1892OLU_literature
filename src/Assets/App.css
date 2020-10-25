@@ -1,7 +1,26 @@
+@font-face {
+  font-family: "Avenir";
+  src: url("Avenir-Light.eot");
+  src: local("Avenir Light"), local("Avenir-Light"),
+    url("Avenir-Light.eot?#iefix") format("embedded-opentype"),
+    url("Avenir-Light.woff2") format("woff2"),
+    url("Avenir-Light.woff") format("woff"),
+    url("Avenir-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
 .App {
   position: absolute;
   width: 100%;
   background-color: #161616;
+}
+
+.lp-left {
+  margin: auto;
+  display: block;
+  width: 80%;
+  margin-top: 100px;
 }
 
 .FormTitle {
@@ -14,19 +33,20 @@
 
 .quote {
   font-family: Times New Roman;
-  font-weight: bold;
-  font-size: 90px;
-  line-height: 82.49%;
+  font-weight: 700;
+  font-size: 96px;
+  line-height: 80%;
   color: white;
-  text-shadow: 2px 2px black;
 }
 
 .note {
   color: white;
-  font-size: 20px;
+  font-family: "Avenir";
+  font-style: normal;
+  font-weight: 50;
+  font-size: 24px;
   margin-top: 30px;
-  line-height: 32px;
-  text-shadow: 1.5px 1.5px black;
+  line-height: 33px;
 }
 
 .quote-md {
@@ -53,6 +73,31 @@
   text-decoration: none;
   color: white;
 }
+.nav-link {
+  font-family: Avenir;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 25px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: rgb(240, 240, 240) !important;
+}
+
+.nav-link:hover {
+  color: #af2e1c !important;
+  font-weight: 700;
+}
+
+.nav-link:focus {
+  color: #af2e1c !important;
+  font-weight: 700;
+}
+
+#sign {
+  background-color: #161616;
+  color: white;
+}
 
 .App-header {
   font-family: Times New Roman;
@@ -66,67 +111,6 @@
 
 .App-link {
   color: #61dafb;
-}
-
-.Profile img {
-  border-radius: 50%;
-  width: 100px;
-  height: auto;
-  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.15));
-  border: 3px solid #ffffff;
-  box-sizing: border-box;
-}
-
-.Profile p {
-  font-family: Helvetica;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  margin-top: 20px;
-  margin-bottom: 0;
-}
-
-.Profile .role {
-  font-family: Helvetica;
-  font-style: italic;
-  font-weight: 550;
-  font-size: 15px;
-  color: white;
-  background-color: #ee4622;
-  height: 20px;
-  width: 100px;
-  border-radius: 5px;
-}
-
-.Profile hr {
-  width: 75%;
-  margin-bottom: 15px;
-  border: 1px solid #c9c9c9;
-}
-
-.Profile button {
-  width: 75%;
-  height: 60px;
-  border-radius: 60px;
-  color: #929292;
-  font-weight: 400;
-  font-size: 24px;
-  white-space: nowrap;
-  background: transparent;
-  border: 1px solid transparent;
-  outline: none;
-  margin-bottom: 20px;
-}
-
-.Profile button:hover {
-  color: white;
-  background-color: #ee4622;
-}
-
-.Profile button:focus {
-  color: white;
-  background-color: #ee4622;
-  outline: none;
 }
 
 .btn-custom {
@@ -161,7 +145,7 @@
 }
 
 .list-book {
-  width: 80%;
+  width: 90%;
   margin: auto;
   display: block;
 }
@@ -249,12 +233,21 @@
 }
 
 .need-confirm p {
-  margin-top: 50%;
+  margin-top: 40%;
   font-style: normal;
   font-weight: 600;
   font-size: 18px;
   text-align: center;
   color: #ffd600;
-  background-color: white;
+  background-color: grey;
   text-shadow: 0.5px 0.5px black;
+}
+
+.splash-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
 }

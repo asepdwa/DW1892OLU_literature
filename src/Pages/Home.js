@@ -30,7 +30,7 @@ export default function Home() {
               <input
                 placeholder="Search for literature"
                 className="form-control"
-                style={{ width: 400, background: `rgba(${"210, 210, 210, 0.25"})`, color: "white" }}
+                style={{ width: 420, background: `rgba(${"210, 210, 210, 0.25"})`, color: "white" }}
                 onChange={(e) => setSearchData({ keyword: e.target.value })}
                 value={searchData.keyword}
                 type="text" />
@@ -42,7 +42,7 @@ export default function Home() {
           </div>
         </form>
       </center> : (
-          <div style={{ paddingLeft: 40, paddingRight: 40 }}>
+          <div className="container-xl">
             <form onSubmit={(e) => {
               e.preventDefault();
               setSearchData({ ...searchData, fetch_keyword: searchData.keyword });
@@ -52,7 +52,7 @@ export default function Home() {
                   <input
                     placeholder="Search for literature"
                     className="form-control"
-                    style={{ width: 400, background: `rgba(${"210, 210, 210, 0.25"})`, color: "white" }}
+                    style={{ width: 375, background: `rgba(${"210, 210, 210, 0.25"})`, color: "white" }}
                     onChange={(e) => setSearchData({ ...searchData, keyword: e.target.value })}
                     value={searchData.keyword}
                     type="text" />
@@ -63,8 +63,20 @@ export default function Home() {
                 </div>
               </div>
             </form>
-            { searchData.fetch_keyword !== "" ? <ListLiterature searchKeyword={searchData.fetch_keyword} />
-              : <ListLiterature />}
+            <div className="row">
+              <div className="col-2" style={{ paddingLeft: 25 }}>
+                <select
+                  className="form-control"
+                  style={{ width: "100%", background: `rgba(${"210, 210, 210, 0.25"})`, color: "white" }}
+                  type="text" >
+                  <option value="2020">2020</option>
+                </select></div>
+
+              <div className="col-10">
+                {searchData.fetch_keyword !== "" ? <ListLiterature searchKeyword={searchData.fetch_keyword} />
+                  : <ListLiterature />}
+              </div>
+            </div>
           </div>
         )
       }

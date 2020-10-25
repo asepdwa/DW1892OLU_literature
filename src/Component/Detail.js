@@ -3,10 +3,10 @@ import { Modal } from "react-bootstrap";
 import axios from 'axios';
 import fileDownload from 'js-file-download';
 import { useQuery } from "react-query";
-
+import { DocumentPdf } from "grommet-icons";
 import { API } from "../Config/Api";
-import { FaRegBookmark, FaBookOpen, FaTrashAlt } from "react-icons/fa";
-import { useParams, useHistory, Link } from "react-router-dom";
+import { FaRegBookmark, FaTrashAlt } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 import { LoginContext } from "../Context/Login";
 import LoadingScreen from "./LoadingScreen";
 
@@ -14,7 +14,6 @@ export default function Detail() {
   const [state, dispatch] = useContext(LoginContext);
   const [modalState, setModal] = useState({ show: false, message: "", alertType: "alert-success" });
 
-  const history = useHistory();
   const { id } = useParams();
 
   const { loading, error, data: book } = useQuery(
@@ -30,9 +29,6 @@ export default function Detail() {
         fileDownload(res.data, filename + "." + url.split(/[#?]/)[0].split('.').pop().trim())
       })
   };
-
-  if (id === null || id === undefined)
-    return history.push("/Home");
 
   const AddToMyCollection = async () => {
     try {
@@ -99,7 +95,7 @@ export default function Detail() {
         <div className="container-xl text-white mb-2">
           <div className="row">
             <div className="col-sm-4">
-
+              <DocumentPdf style={{ marginTop: 30 }} size="300" color="white" />
             </div>
             <div className="col-sm-6">
               <h3 contenteditable="true"
@@ -125,7 +121,7 @@ export default function Detail() {
                 ISBN
             </p>
               <p className="detail-data">{book.data.data.isbn}</p>
-              <button onClick={() => handleDownload(book.data.data.fileUrl, "download")}
+              <button onClick={() => handleDownload(book.data.data.fileUrl, book.data.data.title)}
                 className="btn-custom"
                 style={{ width: 150, marginLeft: 0 }}
               >
@@ -143,7 +139,7 @@ export default function Detail() {
                 </button>
               ) : <button
                 className="btn-custom"
-                style={{ width: "100%", marginTop: 0 }}
+                style={{ width: 190, marginTop: 0 }}
                 onClick={() => AddToMyCollection()}
               >
                   Add My Collection <FaRegBookmark />

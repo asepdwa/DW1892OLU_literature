@@ -33,26 +33,26 @@ export default function LpButton() {
       <>
         <Button
           variant="danger"
-          style={{ width: 200, marginRight: 10, background: "#AF2E1C", marginBottom: 2 }}
+          style={{ width: 211, marginRight: 10, background: "#AF2E1C", marginBottom: 2, fontWeight: 600 }}
           onClick={() => setSignUp(true)}
         >
           Sign Up
       </Button>
         <Button
           variant="light"
-          style={{ width: 200, marginRight: 10 }}
+          style={{ width: 211, marginRight: 10, fontWeight: 600 }}
           onClick={() => setSignIn(true)}
         >
           Sign In
       </Button>
         <Modal
-          size="sm"
+          size="md"
           aria-labelledby="contained-modal-title-vcenter"
           centered
           show={SignIn}
           onHide={() => setSignIn(false)}
         >
-          <Modal.Body>
+          <Modal.Body id="sign">
             <SignInForm Modal={handleSignUp} />
           </Modal.Body>
         </Modal>
@@ -63,7 +63,7 @@ export default function LpButton() {
           show={SignUp}
           onHide={() => setSignUp(false)}
         >
-          <Modal.Body>
+          <Modal.Body id="sign">
             <SignUpForm Modal={handleSignIn} />
           </Modal.Body>
         </Modal>

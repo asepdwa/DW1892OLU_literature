@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
     "bootstrap": "^4.5.3",
+    "formik": "^2.2.0",
     "grommet-icons": "^4.5.0",
     "grommet-styles": "^0.2.0",
     "js-file-download": "^0.4.12",
@@ -20,7 +21,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-thumbnail": "^1.0.0",
-    "styled-components": "^5.2.0"
+    "styled-components": "^5.2.0",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "start": "react-scripts start",

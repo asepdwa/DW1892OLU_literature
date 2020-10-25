@@ -51,13 +51,8 @@ export default function ListLiterature(props) {
         ? books.data.data.filter((book) => book.userId === state.userData.id)
         : books.data.data.filter((book) => book.status === "Approved");
 
-    bookData = props.searchKeyword ? bookData.filter((book) => {
-      if (props.searchKeyword == null)
-        return book
-      else if (book.title.toLowerCase().includes(props.searchKeyword.toLowerCase())) {
-        return book
-      }
-    }) :
+    bookData = props.searchKeyword ? bookData.filter((book) => props.searchKeyword == null
+      || book.title.toLowerCase().includes(props.searchKeyword.toLowerCase())) :
       bookData;
     console.log(bookData,
       props.searchKeyword);
@@ -73,7 +68,7 @@ export default function ListLiterature(props) {
             )}
             <div className="list-book">
               <Link to={`/Detail/${book.id}`}>
-                <DocumentPdf size="xlarge" color="white" />
+                <DocumentPdf size="120" color="white" />
               </Link>
               {props.myBook && <button onClick={() => handleDelete(book.id)} className="btn" style={{
                 position: "absolute",
@@ -93,7 +88,11 @@ export default function ListLiterature(props) {
               <br />
               <Link style={{ textDecoration: "none", color: "white" }} to={`/Detail/${book.id}`}>
                 <h4 className="mt-4">{book.title}</h4>
-                <p>{book.author} | {book.publication.substring(0, 4)}</p>
+                <div className="row">
+                  <p className="col">{book.author}</p>
+                  <p className="col">{book.publication.substring(0, 4)}</p>
+                </div>
+
               </Link>
             </div>
           </div>

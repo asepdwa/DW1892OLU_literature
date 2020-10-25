@@ -22,7 +22,7 @@ export default function Header(props) {
   return (
     <Navbar collapseOnSelect expand="lg" variant="dark" style={{
       backgroundColor: "#161616",
-      marginTop: 20, paddingLeft: 50, paddingRight: 50
+      marginTop: 20, paddingLeft: 78, paddingRight: 78
     }}>
       {props.homePage && (<><Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
@@ -30,6 +30,8 @@ export default function Header(props) {
             <Link className="nav-link" to="/Profile" style={navLinkStyle}>Profile</Link>
             <Link className="nav-link" to="/Collection" style={navLinkStyle}>My Collection</Link>
             <Link className="nav-link" to="/Add" style={navLinkStyle}>Add Literature</Link>
+            {state.userData?.role === "Admin" &&
+              <Link className="nav-link" to="/Verification" style={navLinkStyle}>Verification</Link>}
             <Nav.Link onClick={handleLogout} style={navLinkStyle}>Logout</Nav.Link>
           </Nav>
         </Navbar.Collapse></>)
