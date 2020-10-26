@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap"
 import { useQuery } from "react-query";
@@ -12,8 +12,14 @@ export default function ListLiterature(props) {
   const [state, dispatch] = useContext(LoginContext);
   const { loading, error, data: books, refetch } = useQuery(
     "getBooksData",
-    async () => await API.get("/books")
+    async () => await API.get("/books" + (props.Year && "?year=" + props.Year) + (props.searchKeyword &&
+      "&search=" + props.searchKeyword))
   );
+
+  useEffect(() => {
+    refetch();
+  }, [props.Year, props.searchKeyword]);
+
   const [modalState, setModal] = useState({ show: false, message: "", alertType: "alert-success" });
 
   const handleDelete = async (id) => {
@@ -50,12 +56,6 @@ export default function ListLiterature(props) {
       : props.myBook
         ? books.data.data.filter((book) => book.userId === state.userData.id)
         : books.data.data.filter((book) => book.status === "Approved");
-
-    bookData = props.searchKeyword ? bookData.filter((book) => props.searchKeyword == null
-      || book.title.toLowerCase().includes(props.searchKeyword.toLowerCase())) :
-      bookData;
-    console.log(bookData,
-      props.searchKeyword);
 
     return (
       <div className="row mt-4">
@@ -99,7 +99,9 @@ export default function ListLiterature(props) {
         )) : (<div style={{ width: "95%", margin: "auto", display: "block" }} className="alert alert-danger" role="alert">
           <h4 className="alert-heading" style={{ textAlign: "center" }}>{
             props.searchKeyword
-              ? "Not found"
+              ? props.Year
+                ? `Result: ${props.searchKeyword} in ${props.Year} Not found`
+                : `Result: ${props.searchKeyword} Not found`
               : props.myCollection ? "You don't have literature that added to your collection"
                 : props.myBook ? "You don't have any literature"
                   : "Book is not found"}</h4>

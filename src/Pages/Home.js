@@ -5,7 +5,8 @@ import ListLiterature from "../Component/ListLiterature";
 export default function Home() {
   const [searchData, setSearchData] = useState({
     keyword: "",
-    fetch_keyword: null,
+    year: "",
+    fetch_keyword: "",
     submit: false,
   });
 
@@ -67,14 +68,19 @@ export default function Home() {
               <div className="col-2" style={{ paddingLeft: 25 }}>
                 <select
                   className="form-control"
-                  style={{ width: "100%", background: `rgba(${"210, 210, 210, 0.25"})`, color: "white" }}
-                  type="text" >
+                  style={{ width: 100, background: `rgba(${"210, 210, 210, 0.25"})`, color: "white" }}
+                  type="text"
+                  onChange={(e) => setSearchData({ ...searchData, year: e.target.value })}
+                >
+                  <option value="">All</option>
+                  <option value="2017">2017</option>
+                  <option value="2018">2018</option>
+                  <option value="2019">2019</option>
                   <option value="2020">2020</option>
                 </select></div>
 
               <div className="col-10">
-                {searchData.fetch_keyword !== "" ? <ListLiterature searchKeyword={searchData.fetch_keyword} />
-                  : <ListLiterature />}
+                <ListLiterature Year={searchData.year} searchKeyword={searchData.fetch_keyword} />
               </div>
             </div>
           </div>
