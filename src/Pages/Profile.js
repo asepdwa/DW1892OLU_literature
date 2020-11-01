@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { FaRegFileImage } from "react-icons/fa"
+import { FaRegFileImage } from "react-icons/fa";
 import { Modal } from "react-bootstrap";
 import { MdEmail } from "react-icons/md";
 import { FaTransgender, FaPhoneAlt, FaLink } from "react-icons/fa";
@@ -21,8 +21,7 @@ export default function Profile() {
   };
 
   const changeAvatar = async () => {
-    if (!avatar)
-      return alert("Select an Image file to change");
+    if (!avatar) return alert("Select an Image file to change");
 
     try {
       if (formUpload) {
@@ -35,7 +34,11 @@ export default function Profile() {
         let body = new FormData();
         body.append("avatar", avatar);
 
-        const res = await API.patch(`/user/avatar/${state.userData.id}`, body, config);
+        const res = await API.patch(
+          `/user/avatar/${state.userData.id}`,
+          body,
+          config
+        );
         alert(res.data.message);
       } else {
         const config = {
@@ -56,14 +59,13 @@ export default function Profile() {
           type: "LOAD_USER",
           payload: resAuth.data.data,
         });
-
       } catch (error) {
         dispatch({
           type: "AUTH_ERROR",
         });
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       alert(err.response.data.error.message);
     }
   };
@@ -74,8 +76,14 @@ export default function Profile() {
         <div className="row">
           <div className="col-sm-8" style={{ paddingLeft: 30 }}>
             <div className="Profilee">
-              <MdEmail size="30" fill="white"
-                style={{ marginTop: 10, filter: `drop-shadow(${"3px 3px #AF2E1C"})` }} />
+              <MdEmail
+                size="30"
+                fill="white"
+                style={{
+                  marginTop: 10,
+                  filter: `drop-shadow(${"3px 3px #AF2E1C"})`,
+                }}
+              />
               <div className="ProfileRow">
                 <p className="profile-data">{state.userData.email}</p>
                 <p className="profile-note">E-mail</p>
@@ -85,7 +93,10 @@ export default function Profile() {
               <FaTransgender
                 size="30"
                 fill="white"
-                style={{ marginTop: 10, filter: `drop-shadow(${"3px 3px #AF2E1C"})` }}
+                style={{
+                  marginTop: 10,
+                  filter: `drop-shadow(${"3px 3px #AF2E1C"})`,
+                }}
               />
               <div className="ProfileRow">
                 <p className="profile-data">{state.userData.gender}</p>
@@ -93,16 +104,28 @@ export default function Profile() {
               </div>
             </div>
             <div className="Profilee">
-              <FaPhoneAlt size="30" fill="white"
-                style={{ marginTop: 10, filter: `drop-shadow(${"3px 3px #AF2E1C"})` }} />
+              <FaPhoneAlt
+                size="30"
+                fill="white"
+                style={{
+                  marginTop: 10,
+                  filter: `drop-shadow(${"3px 3px #AF2E1C"})`,
+                }}
+              />
               <div className="ProfileRow">
                 <p className="profile-data">{state.userData.phone}</p>
                 <p className="profile-note">Phone</p>
               </div>
             </div>
             <div className="Profilee">
-              <ImLocation size="30" fill="white"
-                style={{ marginTop: 10, filter: `drop-shadow(${"3px 3px #AF2E1C"})` }} />
+              <ImLocation
+                size="30"
+                fill="white"
+                style={{
+                  marginTop: 10,
+                  filter: `drop-shadow(${"3px 3px #AF2E1C"})`,
+                }}
+              />
               <div className="ProfileRow">
                 <p className="profile-data">{state.userData.address}</p>
                 <p className="profile-note">Address</p>
@@ -120,7 +143,9 @@ export default function Profile() {
                 display: "block",
               }}
             />
-            <button className="btn-custom" onClick={() => setAvatarModal(true)}>Change Photo Profile</button>
+            <button className="btn-custom" onClick={() => setAvatarModal(true)}>
+              Change Photo Profile
+            </button>
             <Modal
               size="md"
               aria-labelledby="contained-modal-title-vcenter"
@@ -128,24 +153,32 @@ export default function Profile() {
               show={avatarModal}
               onHide={() => setAvatarModal(false)}
             >
-              <Modal.Body>
+              <Modal.Body id="sign">
                 <div className="row">
                   <div className="col-sm-8">
                     <div className="row">
                       <div className="col-9">
                         <div className="form-group">
-                          {formUpload ? <><input
-                            type="file"
-                            className="form-control-file"
-                            name="avatar"
-                            id="avatar"
-                            accept="image/*"
-                            onChange={(e) => handleChange(e)}
-                            style={{ display: "none" }}
-                          />
-                            <label for="avatar" className="btn btn-danger btn-block" style={{ background: "#EE4622" }}>
-                              Attache Photo Profile
-                        </label></> :
+                          {formUpload ? (
+                            <>
+                              <input
+                                type="file"
+                                className="form-control-file"
+                                name="avatar"
+                                id="avatar"
+                                accept="image/*"
+                                onChange={(e) => handleChange(e)}
+                                style={{ display: "none" }}
+                              />
+                              <label
+                                for="avatar"
+                                className="btn btn-danger btn-block"
+                                style={{ background: "#AF2E1C" }}
+                              >
+                                Attache Photo Profile
+                              </label>
+                            </>
+                          ) : (
                             <input
                               className="form-control"
                               type="text"
@@ -153,27 +186,45 @@ export default function Profile() {
                               id="avatar"
                               placeholder="Enter photo profile URL"
                               onChange={(e) => handleChange(e)}
-                            />}
+                            />
+                          )}
                         </div>
                       </div>
                       <div className="col-2" style={{ marginRight: 20 }}>
-                        <button className="btn btn-danger" onClick={(e) => {
-                          e.preventDefault();
-                          setAvatar(null);
-                          setFormUpload(formUpload ? false : true);
-                        }} style={{ background: "#EE4622" }}>
-                          {formUpload ? <FaLink size="22" /> :
-                            <FaRegFileImage size="22" />}</button>
+                        <button
+                          className="btn btn-danger"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setAvatar(null);
+                            setFormUpload(formUpload ? false : true);
+                          }}
+                          style={{ background: "#AF2E1C" }}
+                        >
+                          {formUpload ? (
+                            <FaLink size="22" />
+                          ) : (
+                            <FaRegFileImage size="22" />
+                          )}
+                        </button>
                       </div>
                     </div>
-                    <button className="btn btn-danger btn-block mt-1 mb-4" onClick={() =>
-                      changeAvatar()} style={{ background: "#EE4622" }}>
+                    <button
+                      className="btn btn-danger btn-block mt-1 mb-4"
+                      onClick={() => changeAvatar()}
+                      style={{ background: "#AF2E1C" }}
+                    >
                       Change Photo Profile
-                        </button>
+                    </button>
                   </div>
                   <div className="col-sm-4">
                     <img
-                      src={avatar ? formUpload ? URL.createObjectURL(avatar) : avatar : state.userData.photoUrl}
+                      src={
+                        avatar
+                          ? formUpload
+                            ? URL.createObjectURL(avatar)
+                            : avatar
+                          : state.userData.photoUrl
+                      }
                       alt="Enter Valid Url"
                       style={{
                         width: "100%",
@@ -189,7 +240,7 @@ export default function Profile() {
         </div>
       </div>
       <h4 className="list-title mt-4">My Literature</h4>
-      <ListLiterature myBook={true} />
+      <ListLiterature myLiterature={true} />
     </div>
   );
 }

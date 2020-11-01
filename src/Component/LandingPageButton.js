@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import SignInForm from "../Pages/SignInForm";
 import SignUpForm from "../Pages/SignUpForm";
 import { LoginContext } from "../Context/Login";
@@ -29,44 +29,51 @@ export default function LpButton() {
       onClick={() => history.push("/Home")}
     >
       Home
-    </Button>) : (
-      <>
-        <Button
-          variant="danger"
-          style={{ width: 211, marginRight: 10, background: "#AF2E1C", marginBottom: 2, fontWeight: 600 }}
-          onClick={() => setSignUp(true)}
-        >
-          Sign Up
+    </Button>
+  ) : (
+    <>
+      <Button
+        variant="danger"
+        style={{
+          width: 211,
+          marginRight: 10,
+          background: "#AF2E1C",
+          marginBottom: 2,
+          fontWeight: 600,
+        }}
+        onClick={() => setSignUp(true)}
+      >
+        Sign Up
       </Button>
-        <Button
-          variant="light"
-          style={{ width: 211, marginRight: 10, fontWeight: 600 }}
-          onClick={() => setSignIn(true)}
-        >
-          Sign In
+      <Button
+        variant="light"
+        style={{ width: 211, marginRight: 10, fontWeight: 600 }}
+        onClick={() => setSignIn(true)}
+      >
+        Sign In
       </Button>
-        <Modal
-          size="md"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          show={SignIn}
-          onHide={() => setSignIn(false)}
-        >
-          <Modal.Body id="sign">
-            <SignInForm Modal={handleSignUp} />
-          </Modal.Body>
-        </Modal>
-        <Modal
-          size="md"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          show={SignUp}
-          onHide={() => setSignUp(false)}
-        >
-          <Modal.Body id="sign">
-            <SignUpForm Modal={handleSignIn} />
-          </Modal.Body>
-        </Modal>
-      </>
-    );
+      <Modal
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={SignIn}
+        onHide={() => setSignIn(false)}
+      >
+        <Modal.Body id="sign">
+          <SignInForm Modal={handleSignUp} />
+        </Modal.Body>
+      </Modal>
+      <Modal
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={SignUp}
+        onHide={() => setSignUp(false)}
+      >
+        <Modal.Body id="sign">
+          <SignUpForm Modal={handleSignIn} />
+        </Modal.Body>
+      </Modal>
+    </>
+  );
 }

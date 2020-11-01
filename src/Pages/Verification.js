@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FcApproval } from "react-icons/fc";
-import { FaTrashAlt } from "react-icons/fa"
+import { FaTrashAlt } from "react-icons/fa";
 import { useQuery, useMutation } from "react-query";
 import { Modal } from "react-bootstrap";
 
@@ -9,12 +9,16 @@ import { API } from "../Config/Api";
 import LoadingScreen from "../Component/LoadingScreen";
 
 export default function Verification() {
-  const { loading, error, data: books, refetch } = useQuery(
-    "getBooksData",
-    async () => await API.get("/books")
+  const { loading, error, data: literatures, refetch } = useQuery(
+    "getLiteraturesData",
+    async () => await API.get("/literatures")
   );
 
-  const [modalState, setModal] = useState({ show: false, message: "", alertType: "alert-success" });
+  const [modalState, setModal] = useState({
+    show: false,
+    message: "",
+    alertType: "alert-success",
+  });
 
   const [handleApprove] = useMutation(async (id) => {
     try {
@@ -24,12 +28,20 @@ export default function Verification() {
         },
       };
 
-      const body = JSON.stringify({ status: "Approved" })
-      const res = await API.patch(`/book/${id}`, body, config)
+      const body = JSON.stringify({ status: "Approved" });
+      const res = await API.patch(`/literature/${id}`, body, config);
       refetch();
-      setModal({ show: true, message: res.data.message, alertType: "alert-success" })
+      setModal({
+        show: true,
+        message: res.data.message,
+        alertType: "alert-success",
+      });
     } catch (error) {
-      setModal({ show: true, message: error.response.data.message, alertType: "alert-danger" })
+      setModal({
+        show: true,
+        message: error.response.data.message,
+        alertType: "alert-danger",
+      });
     }
   });
 
@@ -41,38 +53,52 @@ export default function Verification() {
         },
       };
 
-      const body = JSON.stringify({ status: "Canceled" })
-      const res = await API.patch(`/book/${id}`, body, config)
+      const body = JSON.stringify({ status: "Canceled" });
+      const res = await API.patch(`/literature/${id}`, body, config);
       refetch();
-      setModal({ show: true, message: res.data.message, alertType: "alert-success" })
+      setModal({
+        show: true,
+        message: res.data.message,
+        alertType: "alert-success",
+      });
     } catch (error) {
-      setModal({ show: true, message: error.response.data.message, alertType: "alert-danger" })
+      setModal({
+        show: true,
+        message: error.response.data.message,
+        alertType: "alert-danger",
+      });
     }
   });
 
   const [handleDelete] = useMutation(async (id) => {
     try {
-      const res = await API.delete(`/book/${id}`)
+      const res = await API.delete(`/literature/${id}`);
       refetch();
-      setModal({ show: true, message: res.data.message, alertType: "alert-success" })
+      setModal({
+        show: true,
+        message: res.data.message,
+        alertType: "alert-success",
+      });
     } catch (error) {
-      setModal({ show: true, message: error.response.data.message, alertType: "alert-danger" })
+      setModal({
+        show: true,
+        message: error.response.data.message,
+        alertType: "alert-danger",
+      });
     }
   });
 
-  if (loading || !books) {
-    return error ? (
-      <h1>error {error.message} </h1>
-    ) : <LoadingScreen />;
+  if (loading || !literatures) {
+    return error ? <h1>error {error.message} </h1> : <LoadingScreen />;
   } else {
-    let bookData = books.data.data;
+    let datas = literatures.data.data;
 
     return (
       <div className="container-xl text-white mt-4 mb-4">
         <div className="table-responsive">
           <h4 className="list-title" style={{ padding: 0 }}>
-            Book Verification
-      </h4>
+            Literatures Verification
+          </h4>
           <table className="table table-dark table-striped table-md mt-4">
             <thead>
               <tr>
@@ -90,23 +116,28 @@ export default function Verification() {
               </tr>
             </thead>
             <tbody>
-              {bookData.map((book, index) => (
+              {datas.map((literature, index) => (
                 <tr>
                   <td>{index + 1}</td>
-                  <td>{book.uploader.fullName}</td>
-                  <td>{book.isbn}</td>
+                  <td>{literature.uploader.fullName}</td>
+                  <td>{literature.isbn}</td>
                   <td style={{ fontSize: 12, fontWeight: 700 }}>
-                    <Link to={`/Detail/${book.id}`}>
-                      {book.fileUrl.split("/")[book.fileUrl.split("/").length - 1].substring(0, 40)}
+                    <Link to={`/Detail/${literature.id}`}>
+                      {literature.fileUrl
+                        .split("/")
+                        [literature.fileUrl.split("/").length - 1].substring(
+                          0,
+                          40
+                        )}
                     </Link>
                   </td>
-                  {book.status === "Approved" ? (
+                  {literature.status === "Approved" ? (
                     <>
                       <td
                         className="text-success"
                         style={{ fontSize: 12, fontWeight: 700 }}
                       >
-                        {book.status}
+                        {literature.status}
                       </td>
                       <td>
                         <center>
@@ -115,41 +146,41 @@ export default function Verification() {
                       </td>
                     </>
                   ) : (
-                      <>
-                        <td
-                          className={
-                            book.status === "Canceled"
-                              ? "text-danger"
-                              : "text-warning"
-                          }
-                          style={{ fontSize: 12, fontWeight: 700 }}
-                        >
-                          {book.status}
-                        </td>
-                        <td>
-                          <center>
-                            {book.status !== "Canceled" && (
-                              <button
-                                onClick={() => handleCancel(book.id)}
-                                className="btn btn-danger"
-                              >
-                                Cancel
-                              </button>
-                            )}{" "}
+                    <>
+                      <td
+                        className={
+                          literature.status === "Canceled"
+                            ? "text-danger"
+                            : "text-warning"
+                        }
+                        style={{ fontSize: 12, fontWeight: 700 }}
+                      >
+                        {literature.status}
+                      </td>
+                      <td>
+                        <center>
+                          {literature.status !== "Canceled" && (
                             <button
-                              onClick={() => handleApprove(book.id)}
-                              className="btn btn-success"
+                              onClick={() => handleCancel(literature.id)}
+                              className="btn btn-danger"
                             >
-                              Approve
-                      </button>
-                          </center>
-                        </td>
-                      </>
-                    )}
+                              Cancel
+                            </button>
+                          )}{" "}
+                          <button
+                            onClick={() => handleApprove(literature.id)}
+                            className="btn btn-success"
+                          >
+                            Approve
+                          </button>
+                        </center>
+                      </td>
+                    </>
+                  )}
                   <td>
                     <center>
                       <button
-                        onClick={() => handleDelete(book.id)}
+                        onClick={() => handleDelete(literature.id)}
                         className="btn btn-secondary"
                       >
                         <FaTrashAlt />

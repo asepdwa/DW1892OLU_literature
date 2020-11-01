@@ -18,9 +18,21 @@ const SUPPORTED_FORMATS = "application/pdf";
 
 export default function AddBook() {
   const [state] = useContext(LoginContext);
-  const [modalState, setModal] = useState({ show: false, message: "", alertType: "alert-success" });
+  const [modalState, setModal] = useState({
+    show: false,
+    message: "",
+    alertType: "alert-success",
+  });
 
-  const { handleSubmit, getFieldProps, errors, touched, values, setFieldValue, handleBlur } = useFormik({
+  const {
+    handleSubmit,
+    getFieldProps,
+    errors,
+    touched,
+    values,
+    setFieldValue,
+    handleBlur,
+  } = useFormik({
     initialValues: {
       title: "",
       publication: "",
@@ -34,19 +46,24 @@ export default function AddBook() {
       title: yup.string().required("Title is required").min(3, "Too short"),
       publication: yup.string().required("Publication date is required"),
       pages: yup.string().required("Pages number is required"),
-      isbn: yup.string().required("ISBN number is required").min(6, "Too short"),
+      isbn: yup
+        .string()
+        .required("ISBN number is required")
+        .min(6, "Too short"),
       author: yup.string().required("Author Name is required"),
-      file: yup.mixed().required("A file is required")
+      file: yup
+        .mixed()
+        .required("A file is required")
         .test(
           "fileSize",
           "File too large, 10mb maximum",
-          value => value && value.size <= FILE_SIZE
+          (value) => value && value.size <= FILE_SIZE
         )
         .test(
           "fileFormat",
           "Unsupported Format",
-          value => value && SUPPORTED_FORMATS.includes(value.type)
-        )
+          (value) => value && SUPPORTED_FORMATS.includes(value.type)
+        ),
     }),
 
     onSubmit: (values) => {
@@ -71,13 +88,24 @@ export default function AddBook() {
       body.append("isbn", value.isbn);
       body.append("author", value.author);
       body.append("file", value.file);
-      body.append("status", state.userData.role === "Admin" ? "Approved" : "Waiting to be verified");
+      body.append(
+        "status",
+        state.userData.role === "Admin" ? "Approved" : "Waiting to be verified"
+      );
 
-      const res = await API.post("/book", body, config);
-      setModal({ show: true, message: res.data.message, alertType: "alert-success" });
+      const res = await API.post("/literature", body, config);
+      setModal({
+        show: true,
+        message: res.data.message,
+        alertType: "alert-success",
+      });
     } catch (err) {
       console.log(err);
-      setModal({ show: true, message: err.response.data.error.message, alertType: "alert-success" });
+      setModal({
+        show: true,
+        message: err.response.data.error.message,
+        alertType: "alert-success",
+      });
     }
   });
 
@@ -87,7 +115,7 @@ export default function AddBook() {
     if (file) {
       setFieldValue(e.target.name, file);
     }
-  }
+  };
 
   if (error) {
     setModal({ show: true, message: error, alertType: "alert-danger" });
@@ -141,27 +169,37 @@ export default function AddBook() {
           <input
             type="file"
             name="file"
-            id="file"
+            id="custom-input"
             className="custom-file-input"
             accept=".pdf"
             onChange={handleChangeFile}
             onBlur={handleBlur}
             touched={touched["file"]}
           />
-          <label onBlur={handleBlur} className="custom-file-label">{!values.file ? "Attache Literature File (Only Pdf Supported)" : values.file.name}</label>
-          <span className="help-block text-danger">{touched.file ? errors.file : ""}</span>
+          <label
+            id="custom-input"
+            onBlur={handleBlur}
+            className="custom-file-label"
+          >
+            {!values.file
+              ? "Attache Literature File (Only Pdf Supported)"
+              : values.file.name}
+          </label>
+          <span className="help-block text-danger">
+            {touched.file ? errors.file : ""}
+          </span>
         </div>
-        {isLoading ? <LoadingScreen size="2.5rem" />
-          : (
-            <button
-              className="btn btn-danger"
-              type="submit"
-              style={{ background: "#af2e1c", float: "right" }}
-            >
-              Add Literature <BiBookAdd size="24" />
-            </button>
-          )}
-
+        {isLoading ? (
+          <LoadingScreen size="2.5rem" />
+        ) : (
+          <button
+            className="btn btn-danger"
+            type="submit"
+            style={{ background: "#af2e1c", float: "right" }}
+          >
+            Add Literature <BiBookAdd size="24" />
+          </button>
+        )}
       </form>
       <Modal
         size="lg"
@@ -177,6 +215,6 @@ export default function AddBook() {
           <h4>{modalState.message}</h4>
         </div>
       </Modal>
-    </div >
+    </div>
   );
 }

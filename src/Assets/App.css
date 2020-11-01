@@ -20,7 +20,7 @@
   margin: auto;
   display: block;
   width: 80%;
-  margin-top: 100px;
+  margin-top: 150px;
 }
 
 .FormTitle {
@@ -250,4 +250,82 @@
   -moz-transform: translateX(-50%) translateY(-50%);
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
+}
+
+input,
+select,
+textarea,
+button,
+label {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border: 2px solid #af2e1c !important;
+  background-color: #1d1d1d !important;
+  color: white;
+}
+
+input.form-control,
+select.form-control,
+textarea.form-control,
+div.form-control,
+#custom-input {
+  background-color: #454545;
+  color: white !important;
+}
+
+input::placeholder,
+select:first-child {
+  color: white !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #454545 inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #1d1d1d inset !important;
+  -webkit-text-fill-color: white !important;
+}
+
+select {
+  padding: 6px 8px !important;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: #727272;
+}
+
+.card {
+  border: 1px solid #727272;
+  background-color: #454545;
+}
+
+.card-header {
+  padding: 5px 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-body {
+  padding: 10px;
+}
+
+small {
+  text-align: center;
 }

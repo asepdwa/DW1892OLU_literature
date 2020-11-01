@@ -2,11 +2,13 @@ import React, { useContext, useEffect, Suspense, useState } from "react";
 import { ReactQueryConfigProvider } from "react-query";
 import AppRouter from "./Routes/Router";
 
-import "./Assets/App.css";
 import { LoginContext } from "./Context/Login";
 import { API, setAuthToken } from "./Config/Api";
 
 import LoadingScreen from "./Component/LoadingScreen";
+import Splash from "./Pages/Splash";
+
+import "./Assets/App.css";
 
 const queryConfig = {
   suspense: true,
@@ -33,31 +35,21 @@ export default function App() {
       } catch (err) {
         dispatch({
           type: "AUTH_ERROR",
-        })
+        });
       }
       setAuth(true);
-    };
+    }
 
     loadUser();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return !isAuth ? (
-    <div className="splash-screen">
-      <h3 className="mt-4" style={{
-        fontFamily: "Times New Roman",
-        fontSize: 65,
-        fontStyle: "italic",
-        fontWeight: 700,
-        color: "white",
-      }}>literature
-      <img style={{ marginLeft: -12, marginTop: -32, width: 110, height: 110 }} src="quill-drawing-a-line.png" alt="icon" />
-      </h3>
-    </div>
+    <Splash />
   ) : (
-      <ReactQueryConfigProvider config={queryConfig}>
-        <Suspense fallback={<LoadingScreen />}>
-          <AppRouter />
-        </Suspense>
-      </ReactQueryConfigProvider>
-    );
+    <ReactQueryConfigProvider config={queryConfig}>
+      <Suspense fallback={<LoadingScreen />}>
+        <AppRouter />
+      </Suspense>
+    </ReactQueryConfigProvider>
+  );
 }

@@ -1,31 +1,54 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap"
+import { Modal } from "react-bootstrap";
 import { useQuery } from "react-query";
-import { DocumentPdf } from "grommet-icons";
 
 import { API } from "../Config/Api";
 import { LoginContext } from "../Context/Login";
 import LoadingScreen from "./LoadingScreen";
 
+const style_X = {
+  position: "absolute",
+  top: 5,
+  left: "73%",
+  backgroundColor: "#555",
+  color: "white",
+  fontSize: 16,
+  fontWeight: 600,
+  padding: 2,
+  width: 25,
+  borderRadius: "100%",
+  display: "block",
+  zIndex: 10,
+  textAlign: "center",
+};
+
 export default function ListLiterature(props) {
   const [state, dispatch] = useContext(LoginContext);
-  const { loading, error, data: books, refetch } = useQuery(
-    "getBooksData",
-    async () => await API.get("/books" + (props.Year && "?year=" + props.Year) + (props.searchKeyword &&
-      "&search=" + props.searchKeyword))
+  const { from, to, searchKeyword, status, myCollection, myLiterature } = props;
+  const { loading, error, data: literatures, refetch } = useQuery(
+    "getLiteraturesData",
+    async () =>
+      await API.get(
+        `/literatures?from=${from || ""}&to=${to || ""}&q=${
+          searchKeyword || ""
+        }&status=${status || ""}`
+      )
   );
 
   useEffect(() => {
     refetch();
-  }, [props.Year, props.searchKeyword]);
+  }, [from, to, searchKeyword]);
 
-  const [modalState, setModal] = useState({ show: false, message: "", alertType: "alert-success" });
+  const [modalState, setModal] = useState({
+    show: false,
+    message: "",
+    alertType: "alert-success",
+  });
 
   const handleDelete = async (id) => {
     try {
-      const res = await API.delete(`/book/${id}`);
-      refetch();
+      const res = await API.delete(`/literature/${id}`);
       try {
         const resAuth = await API.get("/auth");
 
@@ -33,80 +56,102 @@ export default function ListLiterature(props) {
           type: "LOAD_USER",
           payload: resAuth.data.data,
         });
-
       } catch (error) {
         dispatch({
           type: "AUTH_ERROR",
         });
       }
 
-      setModal({ show: true, message: res.data.message, alertType: "alert-success" });
+      setModal({
+        show: true,
+        message: res.data.message,
+        alertType: "alert-success",
+      });
+      refetch();
     } catch (error) {
-      setModal({ show: true, message: error.response.message, alertType: "alert-danger" });
+      setModal({
+        show: true,
+        message: error.response.message,
+        alertType: "alert-danger",
+      });
     }
   };
 
-  if (loading || !books) {
-    return error ? (
-      <h1>error {error.message} </h1>
-    ) : <LoadingScreen />;
+  if (loading || !literatures) {
+    return error ? <h1>error {error.message} </h1> : <LoadingScreen />;
   } else {
-    let bookData = props.myCollection
-      ? state.userData.bookmarks_data
-      : props.myBook
-        ? books.data.data.filter((book) => book.userId === state.userData.id)
-        : books.data.data.filter((book) => book.status === "Approved");
+    let datas = myCollection
+      ? state.userData.collections_data
+      : myLiterature
+      ? literatures.data.data.filter(
+          (literature) => literature.uploader.id === state.userData.id
+        )
+      : literatures.data.data;
 
     return (
       <div className="row mt-4">
-        {bookData.length > 0 ? bookData.map((book, index) => (
-          <div key={index} className="col-sm-3">
-            {book.status !== "Approved" && (
-              <div className="need-confirm">
-                <p style={{ color: book.status === "Canceled" && "red" }}>{book.status}</p>
-              </div>
-            )}
-            <div className="list-book">
-              <Link to={`/Detail/${book.id}`}>
-                <DocumentPdf size="120" color="white" />
-              </Link>
-              {props.myBook && <button onClick={() => handleDelete(book.id)} className="btn" style={{
-                position: "absolute",
-                top: 5,
-                left: "73%",
-                backgroundColor: "#555",
-                color: "white",
-                fontSize: 16,
-                fontWeight: 600,
-                padding: 2,
-                width: 25,
-                borderRadius: "100%",
-                display: "block",
-                zIndex: 10,
-                textAlign: "center",
-              }}> X </button>}
-              <br />
-              <Link style={{ textDecoration: "none", color: "white" }} to={`/Detail/${book.id}`}>
-                <h4 className="mt-4">{book.title}</h4>
-                <div className="row">
-                  <p className="col">{book.author}</p>
-                  <p className="col">{book.publication.substring(0, 4)}</p>
+        {datas.length > 0 ? (
+          datas.map((literature, index) => (
+            <div
+              key={index}
+              className={myLiterature || myCollection ? "col-sm-2" : "col-sm-3"}
+            >
+              {literature.status !== "Approved" && (
+                <div className="need-confirm">
+                  <p
+                    style={{ color: literature.status === "Canceled" && "red" }}
+                  >
+                    {literature.status}
+                  </p>
                 </div>
-
-              </Link>
+              )}
+              <div className="list-book">
+                <Link to={`/Detail/${literature.id}`}>
+                  <img src="thumb.png" alt={literature.title} />
+                </Link>
+                {myLiterature && (
+                  <button
+                    onClick={() => handleDelete(literature.id)}
+                    className="btn"
+                    style={style_X}
+                  >
+                    {" "}
+                    X{" "}
+                  </button>
+                )}
+                <br />
+                <Link
+                  style={{ textDecoration: "none", color: "white" }}
+                  to={`/Detail/${literature.id}`}
+                >
+                  <h4 className="mt-4">{literature.title}</h4>
+                  <div className="row">
+                    <p className="col">{literature.author}</p>
+                    <p className="col">
+                      {literature.publication.substring(0, 4)}
+                    </p>
+                  </div>
+                </Link>
+              </div>
             </div>
+          ))
+        ) : (
+          <div
+            style={{ width: "95%", margin: "auto", display: "block" }}
+            className="alert alert-danger"
+            role="alert"
+          >
+            <h4 className="alert-heading" style={{ textAlign: "center" }}>
+              {searchKeyword
+                ? `Result: ${searchKeyword} Not found`
+                : myCollection
+                ? "You don't have literature that added to your collection"
+                : myLiterature
+                ? "You don't have any literature"
+                : "Literature is not found"}
+            </h4>
           </div>
-        )) : (<div style={{ width: "95%", margin: "auto", display: "block" }} className="alert alert-danger" role="alert">
-          <h4 className="alert-heading" style={{ textAlign: "center" }}>{
-            props.searchKeyword
-              ? props.Year
-                ? `Result: ${props.searchKeyword} in ${props.Year} Not found`
-                : `Result: ${props.searchKeyword} Not found`
-              : props.myCollection ? "You don't have literature that added to your collection"
-                : props.myBook ? "You don't have any literature"
-                  : "Book is not found"}</h4>
-        </div>)
-        }
+        )}
         <Modal
           size="lg"
           aria-labelledby="contained-modal-title-vcenter"
@@ -118,10 +163,10 @@ export default function ListLiterature(props) {
             className={`alert ${modalState.alertType}`}
             style={{ margin: 10, textAlign: "center" }}
           >
-            {modalState.message}
+            <h4>{modalState.message}</h4>
           </div>
         </Modal>
-      </div >
+      </div>
     );
   }
 }

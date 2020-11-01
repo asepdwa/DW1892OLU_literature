@@ -10,7 +10,6 @@ export default function Header(props) {
     dispatch({
       type: "LOGOUT",
     });
-    alert("Logout berhasil");
     history.push("/");
   };
 
