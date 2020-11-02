@@ -38,7 +38,7 @@ export default function ListLiterature(props) {
 
   useEffect(() => {
     refetch();
-  }, [from, to, searchKeyword]);
+  }, [from, to, searchKeyword]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [modalState, setModal] = useState({
     show: false,
