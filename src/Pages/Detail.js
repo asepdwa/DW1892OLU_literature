@@ -80,7 +80,7 @@ export default function Detail() {
   const removeFromMyCollection = async () => {
     try {
       const res = await API.delete(
-        `/collection/${state.userData.id}/${parseInt(id)}`
+        `/collection?UserId=${state.userData.id}&LiteratureId=${parseInt(id)}`
       );
 
       try {

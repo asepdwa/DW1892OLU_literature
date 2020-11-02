@@ -107,7 +107,7 @@ export default function ListLiterature(props) {
               )}
               <div className="list-book">
                 <Link to={`/Detail/${literature.id}`}>
-                  <img src="thumb.png" alt={literature.title} />
+                  <img src={literature.thumbnailUrl} alt={literature.title} />
                 </Link>
                 {myLiterature && (
                   <button

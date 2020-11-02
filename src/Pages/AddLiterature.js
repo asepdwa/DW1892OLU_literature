@@ -83,7 +83,7 @@ export default function AddBook() {
       let body = new FormData();
       body.append("title", value.title);
       body.append("publication", value.publication);
-      body.append("userId", state.userData.id);
+      body.append("UserId", state.userData.id);
       body.append("pages", value.pages);
       body.append("isbn", value.isbn);
       body.append("author", value.author);
