@@ -47,7 +47,7 @@ export default function Detail() {
 
       const body = JSON.stringify({
         UserId: state.userData.id,
-        BookId: parseInt(id),
+        LiteratureId: parseInt(id),
       });
       const res = await API.post("/collection", body, config);
 
@@ -210,7 +210,7 @@ export default function Detail() {
             className={`alert ${modalState.alertType}`}
             style={{ margin: 10, textAlign: "center" }}
           >
-            {modalState.message}
+            <h4>{modalState.message}</h4>
           </div>
         </Modal>
       </div>

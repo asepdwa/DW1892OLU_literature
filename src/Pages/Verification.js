@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FcApproval } from "react-icons/fc";
 import { FaTrashAlt } from "react-icons/fa";
 import { useQuery, useMutation } from "react-query";
-import { Modal } from "react-bootstrap";
+import { Modal, Dropdown } from "react-bootstrap";
 
 import { API } from "../Config/Api";
 import LoadingScreen from "../Component/LoadingScreen";
 
 export default function Verification() {
+  const [filterStatus, setFilterStatus] = useState("");
   const { loading, error, data: literatures, refetch } = useQuery(
     "getLiteraturesData",
-    async () => await API.get("/literatures")
+    async () => await API.get(`/literatures?status=${filterStatus}`)
   );
 
   const [modalState, setModal] = useState({
@@ -88,6 +89,10 @@ export default function Verification() {
     }
   });
 
+  useEffect(() => {
+    refetch();
+  }, [filterStatus]);
+
   if (loading || !literatures) {
     return error ? <h1>error {error.message} </h1> : <LoadingScreen />;
   } else {
@@ -96,9 +101,52 @@ export default function Verification() {
     return (
       <div className="container-xl text-white mt-4 mb-4">
         <div className="table-responsive">
-          <h4 className="list-title" style={{ padding: 0 }}>
-            Literatures Verification
-          </h4>
+          <div className="row">
+            <div className="col">
+              <h4 className="list-title" style={{ padding: 0 }}>
+                Literatures Verification
+              </h4>
+            </div>
+            <div className="col">
+              <Dropdown>
+                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                  {filterStatus === "" ? "Filter Status" : filterStatus}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFilterStatus("");
+                    }}
+                  >
+                    All
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFilterStatus("Approved");
+                    }}
+                  >
+                    Approved
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    class="dropdown-item"
+                    onClick={() => {
+                      setFilterStatus("Canceled");
+                    }}
+                  >
+                    Canceled
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    class="dropdown-item"
+                    onClick={() => {
+                      setFilterStatus("Waiting to be verified");
+                    }}
+                  >
+                    Waiting to be verified
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
           <table className="table table-dark table-striped table-md mt-4">
             <thead>
               <tr>
@@ -202,7 +250,7 @@ export default function Verification() {
               className={`alert ${modalState.alertType}`}
               style={{ margin: 10, textAlign: "center" }}
             >
-              {modalState.message}
+              <h4>{modalState.message}</h4>
             </div>
           </Modal>
         </div>
