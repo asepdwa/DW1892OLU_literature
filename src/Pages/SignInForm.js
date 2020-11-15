@@ -5,7 +5,7 @@ import { useMutation } from "react-query";
 
 import { LoginContext } from "../Context/Login";
 import { API, setAuthToken } from "../Config/Api";
-import CustomInput from "../Component/CustomInput";
+import { CustomInput, CustomInputPassword } from "../Component/CustomForm";
 import LoadingScreen from "../Component/LoadingScreen";
 
 import { useFormik } from "formik";
@@ -17,7 +17,7 @@ export default function SignIn(props) {
   const [message, setMessage] = useState({
     error: false,
     fill: "",
-  })
+  });
 
   const { handleSubmit, getFieldProps, errors, touched } = useFormik({
     initialValues: {
@@ -69,7 +69,6 @@ export default function SignIn(props) {
         }
 
         history.push("/Home");
-
       } catch (err) {
         dispatch({
           type: "LOGIN_FAILED",
@@ -89,13 +88,21 @@ export default function SignIn(props) {
         paddingTop: 20,
         paddingBottom: 30,
       }}
+      autoComplete="off"
       onSubmit={handleSubmit}
     >
       {(message.fill !== "" || error) && (
         <div
-          className={(message.error || error) ? "alert alert-danger" : "alert alert-success"}
+          className={
+            message.error || error
+              ? "alert alert-danger"
+              : "alert alert-success"
+          }
         >
-          <center>{(message.error || error) && <FaExclamationTriangle size={25} />} <b>{message.fill || error}</b></center>
+          <center>
+            {(message.error || error) && <FaExclamationTriangle size={25} />}{" "}
+            <b>{message.fill || error}</b>
+          </center>
         </div>
       )}
       <div className="form-group">
@@ -108,23 +115,23 @@ export default function SignIn(props) {
         {...getFieldProps("email")}
         error={touched.email ? errors.email : ""}
       />
-      <CustomInput
-        type="password"
+      <CustomInputPassword
         name="password"
-        placeholder="password"
+        placeholder="Password"
         {...getFieldProps("password")}
         error={touched.password ? errors.password : ""}
       />
-      {isLoading ? <LoadingScreen size="2.5rem" />
-        : (
-          <button
-            className="btn btn-danger"
-            type="submit"
-            style={{ width: "100%", background: "#af2e1c" }}
-          >
-            Sign In
-          </button>
-        )}
+      {isLoading ? (
+        <LoadingScreen size="2.5rem" />
+      ) : (
+        <button
+          className="btn btn-danger"
+          type="submit"
+          style={{ width: "100%", background: "#af2e1c" }}
+        >
+          Sign In
+        </button>
+      )}
 
       <p className="modalFooter">
         Don't have an account ? <b onClick={props.Modal}>Click Here</b>

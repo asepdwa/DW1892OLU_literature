@@ -140,7 +140,9 @@ export default function Detail() {
               {literature.data.data.author}
             </p>
             <p className="detail-type">Publication Date</p>
-            <p className="detail-data">{literature.data.data.publication}</p>
+            <p className="detail-data">
+              {literature.data.data.publication.substring(0, 10)}
+            </p>
             <p className="detail-type">Uploaded by</p>
             <p className="detail-data">
               {literature.data.data.uploader.fullName}

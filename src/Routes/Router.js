@@ -5,9 +5,9 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+// import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import PrivateRoute from "./PrivateRoute";
-
 import Navbar from "../Component/Navbar";
 import Detail from "../Pages/Detail";
 import LandingPage from "../Pages/LandingPage";
@@ -42,7 +42,6 @@ export default function AppRouter() {
               <PrivateRoute path="/add" component={AddLiterature} />
               <PrivateRoute path="/verification" component={Verification} />
               <Route path="/detail">
-                {" "}
                 <Redirect to="/home" />
               </Route>
             </Switch>

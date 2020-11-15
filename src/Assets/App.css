@@ -16,6 +16,24 @@
   background-color: #161616;
 }
 
+.fade-enter {
+  opacity: 0.01;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit.fade-exit-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
 .lp-left {
   margin: auto;
   display: block;
@@ -94,7 +112,7 @@
   font-weight: 700;
 }
 
-#sign {
+#custom {
   background-color: #161616;
   color: white;
 }
@@ -264,7 +282,6 @@ label {
 input:focus,
 select:focus,
 textarea:focus {
-  border: 2px solid #af2e1c !important;
   background-color: #1d1d1d !important;
   color: white;
 }

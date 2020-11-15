@@ -34,11 +34,7 @@ export default function Profile() {
         let body = new FormData();
         body.append("avatar", avatar);
 
-        const res = await API.patch(
-          `/user/avatar/${state.userData.id}`,
-          body,
-          config
-        );
+        const res = await API.patch(`/avatar`, body, config);
         alert(res.data.message);
       } else {
         const config = {
@@ -141,6 +137,7 @@ export default function Profile() {
                 height: "auto",
                 margin: "auto",
                 display: "block",
+                borderRadius: "10%",
               }}
             />
             <button className="btn-custom" onClick={() => setAvatarModal(true)}>
@@ -153,7 +150,7 @@ export default function Profile() {
               show={avatarModal}
               onHide={() => setAvatarModal(false)}
             >
-              <Modal.Body id="sign">
+              <Modal.Body id="custom">
                 <div className="row">
                   <div className="col-sm-8">
                     <div className="row">
@@ -240,7 +237,7 @@ export default function Profile() {
         </div>
       </div>
       <h4 className="list-title mt-4">My Literature</h4>
-      <ListLiterature myLiterature={true} />
+      <ListLiterature query="literatures" uploader={state.userData.id} />
     </div>
   );
 }

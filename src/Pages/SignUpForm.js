@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { useMutation } from "react-query";
 import { FaExclamationTriangle } from "react-icons/fa";
 
-import { API } from "../Config/Api";
-import CustomInput, { CustomSelect } from "../Component/CustomInput";
+import { API, setAuthToken } from "../Config/Api";
+import { LoginContext } from "../Context/Login";
+
+import {
+  CustomInput,
+  CustomInputPassword,
+  CustomSelect,
+} from "../Component/CustomForm";
 import LoadingScreen from "../Component/LoadingScreen";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
 export default function SignUpForm(props) {
+  const history = useHistory();
+
+  // eslint-disable-next-line
+  const [state, dispatch] = useContext(LoginContext);
   const [message, setMessage] = useState({
     error: false,
     fill: "",
-  })
+  });
 
   const { handleSubmit, getFieldProps, errors, touched } = useFormik({
     initialValues: {
@@ -50,7 +61,22 @@ export default function SignUpForm(props) {
 
       const body = values;
       const res = await API.post("/signup", body, config);
+
       setMessage({ error: false, fill: res.data.message });
+      setAuthToken(res.data.data.token);
+
+      try {
+        const resAuth = await API.get("/auth");
+        dispatch({
+          type: "LOAD_USER",
+          payload: resAuth.data.data,
+        });
+        history.push("/Home");
+      } catch (err) {
+        dispatch({
+          type: "AUTH_ERROR",
+        });
+      }
     } catch (err) {
       console.log(err);
       setMessage({ error: true, fill: err.response.data.error.message });
@@ -64,6 +90,7 @@ export default function SignUpForm(props) {
         paddingTop: 20,
         paddingBottom: 30,
       }}
+      autoComplete="off"
       onSubmit={handleSubmit}
     >
       <div className="form-group">
@@ -71,9 +98,16 @@ export default function SignUpForm(props) {
       </div>
       {(message.fill !== "" || error) && (
         <div
-          className={(message.error || error) ? "alert alert-danger" : "alert alert-success"}
+          className={
+            message.error || error
+              ? "alert alert-danger"
+              : "alert alert-success"
+          }
         >
-          <center>{(message.error || error) && <FaExclamationTriangle size={25} />} <b>{message.fill || error}</b></center>
+          <center>
+            {(message.error || error) && <FaExclamationTriangle size={25} />}{" "}
+            <b>{message.fill || error}</b>
+          </center>
         </div>
       )}
       <CustomInput
@@ -83,8 +117,7 @@ export default function SignUpForm(props) {
         {...getFieldProps("email")}
         error={touched.email ? errors.email : ""}
       />
-      <CustomInput
-        type="password"
+      <CustomInputPassword
         name="password"
         placeholder="Password"
         {...getFieldProps("password")}
@@ -103,12 +136,8 @@ export default function SignUpForm(props) {
         {...getFieldProps("gender")}
         error={touched.gender ? errors.gender : ""}
       >
-        <option>
-          Select your gender
-            </option>
-        <option value="Male">
-          Male
-            </option>
+        <option>Select your gender</option>
+        <option value="Male">Male</option>
         <option value="Female">Female</option>
       </CustomSelect>
       <CustomInput
@@ -125,16 +154,17 @@ export default function SignUpForm(props) {
         {...getFieldProps("address")}
         error={touched.address ? errors.address : ""}
       />
-      {isLoading ? <LoadingScreen size="2.5rem" />
-        : (
-          <button
-            className="btn btn-danger"
-            type="submit"
-            style={{ width: "100%", background: "#af2e1c" }}
-          >
-            Sign Up
-          </button>
-        )}
+      {isLoading ? (
+        <LoadingScreen size="2.5rem" />
+      ) : (
+        <button
+          className="btn btn-danger"
+          type="submit"
+          style={{ width: "100%", background: "#af2e1c" }}
+        >
+          Sign Up
+        </button>
+      )}
       <p className="modalFooter">
         Already have an account ? <b onClick={props.Modal}>Click Here</b>
       </p>

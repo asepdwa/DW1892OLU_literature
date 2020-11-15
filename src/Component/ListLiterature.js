@@ -1,139 +1,113 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 
 import { API } from "../Config/Api";
 import { LoginContext } from "../Context/Login";
-import LoadingScreen from "./LoadingScreen";
 
-const style_X = {
-  position: "absolute",
-  top: 5,
-  left: "73%",
-  backgroundColor: "#555",
-  color: "white",
-  fontSize: 16,
-  fontWeight: 600,
-  padding: 2,
-  width: 25,
-  borderRadius: "100%",
-  display: "block",
-  zIndex: 10,
-  textAlign: "center",
-};
+import LoadingScreen from "./LoadingScreen";
+import ModalConfirm from "./ModalConfirm";
+import ModalAlert from "./ModalAlert";
+import Literature from "./Literature";
 
 export default function ListLiterature(props) {
-  const [state, dispatch] = useContext(LoginContext);
-  const { from, to, searchKeyword, status, myCollection, myLiterature } = props;
+  const [state] = useContext(LoginContext);
+  const {
+    collection,
+    from,
+    to,
+    searchKeyword,
+    status,
+    uploader,
+    sort,
+    order,
+  } = props;
+
   const { loading, error, data: literatures, refetch } = useQuery(
-    "getLiteraturesData",
+    `getLiteraturesData`,
     async () =>
       await API.get(
         `/literatures?from=${from || ""}&to=${to || ""}&q=${
           searchKeyword || ""
-        }&status=${status || ""}`
+        }&status=${status || ""}&uploader=${uploader || ""}&sort=${
+          sort || ""
+        }&order=${order || ""}`
       )
   );
 
   useEffect(() => {
     refetch();
-  }, [from, to, searchKeyword]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [from, to, searchKeyword, sort, order, status, uploader]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [modalState, setModal] = useState({
+  const [modalConfirmState, setModalConfirm] = useState({
+    show: false,
+    message: "",
+    actionId: null,
+  });
+
+  const [modalAlertState, setModalAlert] = useState({
     show: false,
     message: "",
     alertType: "alert-success",
   });
 
-  const handleDelete = async (id) => {
-    try {
-      const res = await API.delete(`/literature/${id}`);
-      try {
-        const resAuth = await API.get("/auth");
+  const handleDeleteConfirm = (id) => {
+    setModalConfirm({
+      show: true,
+      message: "Are you sure want delete? ",
+      actionParams: { id },
+    });
+  };
 
-        dispatch({
-          type: "LOAD_USER",
-          payload: resAuth.data.data,
+  const [handleDelete, { loading: deleteLoading }] = useMutation(
+    async (params) => {
+      try {
+        const res = await API.delete(`/literature/${params.id}`);
+
+        setModalConfirm({
+          ...modalConfirmState,
+          show: false,
         });
+
+        setModalAlert({
+          show: true,
+          message: res.data.message,
+          alertType: "alert-success",
+        });
+
+        refetch();
       } catch (error) {
-        dispatch({
-          type: "AUTH_ERROR",
+        setModalConfirm({
+          ...modalConfirmState,
+          show: false,
+        });
+
+        setModalAlert({
+          show: true,
+          message: error.response.message,
+          alertType: "alert-danger",
         });
       }
-
-      setModal({
-        show: true,
-        message: res.data.message,
-        alertType: "alert-success",
-      });
-      refetch();
-    } catch (error) {
-      setModal({
-        show: true,
-        message: error.response.message,
-        alertType: "alert-danger",
-      });
     }
-  };
+  );
 
   if (loading || !literatures) {
     return error ? <h1>error {error.message} </h1> : <LoadingScreen />;
   } else {
-    let datas = myCollection
-      ? state.userData.collections_data
-      : myLiterature
-      ? literatures.data.data.filter(
-          (literature) => literature.uploader.id === state.userData.id
-        )
-      : literatures.data.data;
+    let datas = !collection
+      ? literatures.data.data
+      : state.userData.collections_data;
 
     return (
       <div className="row mt-4">
         {datas.length > 0 ? (
           datas.map((literature, index) => (
-            <div
-              key={index}
-              className={myLiterature || myCollection ? "col-sm-2" : "col-sm-3"}
-            >
-              {literature.status !== "Approved" && (
-                <div className="need-confirm">
-                  <p
-                    style={{ color: literature.status === "Canceled" && "red" }}
-                  >
-                    {literature.status}
-                  </p>
-                </div>
-              )}
-              <div className="list-book">
-                <Link to={`/Detail/${literature.id}`}>
-                  <img src={literature.thumbnailUrl} alt={literature.title} />
-                </Link>
-                {myLiterature && (
-                  <button
-                    onClick={() => handleDelete(literature.id)}
-                    className="btn"
-                    style={style_X}
-                  >
-                    {" "}
-                    X{" "}
-                  </button>
-                )}
-                <br />
-                <Link
-                  style={{ textDecoration: "none", color: "white" }}
-                  to={`/Detail/${literature.id}`}
-                >
-                  <h4 className="mt-4">{literature.title}</h4>
-                  <div className="row">
-                    <p className="col">{literature.author}</p>
-                    <p className="col">
-                      {literature.publication.substring(0, 4)}
-                    </p>
-                  </div>
-                </Link>
-              </div>
-            </div>
+            <Literature
+              literature={literature}
+              index={index}
+              refetch={refetch}
+              profile={uploader ? true : false}
+              handleDelete={handleDeleteConfirm}
+            />
           ))
         ) : (
           <div
@@ -144,28 +118,21 @@ export default function ListLiterature(props) {
             <h4 className="alert-heading" style={{ textAlign: "center" }}>
               {searchKeyword
                 ? `Result: ${searchKeyword} Not found`
-                : myCollection
+                : collection
                 ? "You don't have literature that added to your collection"
-                : myLiterature
+                : uploader
                 ? "You don't have any literature"
                 : "Literature is not found"}
             </h4>
           </div>
         )}
-        <Modal
-          size="lg"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          show={modalState.show}
-          onHide={() => setModal({ ...modalState, show: false })}
-        >
-          <div
-            className={`alert ${modalState.alertType}`}
-            style={{ margin: 10, textAlign: "center" }}
-          >
-            <h4>{modalState.message}</h4>
-          </div>
-        </Modal>
+        <ModalAlert modal={modalAlertState} setModal={setModalAlert} />
+        <ModalConfirm
+          modal={modalConfirmState}
+          setModal={setModalConfirm}
+          action={handleDelete}
+          loadingAction={deleteLoading}
+        />
       </div>
     );
   }

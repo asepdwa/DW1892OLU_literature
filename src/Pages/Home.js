@@ -188,9 +188,10 @@ export default function Home() {
 
             <div className="col-10">
               <ListLiterature
+                query="literatures"
+                status="Approved"
                 from={searchData.submitted_from}
                 to={searchData.submitted_to}
-                status="Approved"
                 searchKeyword={searchData.submitted_keyword}
               />
             </div>

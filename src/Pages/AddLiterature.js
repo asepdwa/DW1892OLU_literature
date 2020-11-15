@@ -1,20 +1,25 @@
 import React, { useContext, useState } from "react";
 import { useMutation } from "react-query";
-import { Modal } from "react-bootstrap";
-
 import { BiBookAdd } from "react-icons/bi";
 
 import { API } from "../Config/Api";
 import { LoginContext } from "../Context/Login";
 
-import CustomInput from "../Component/CustomInput";
+import { CustomInput } from "../Component/CustomForm";
 import LoadingScreen from "../Component/LoadingScreen";
+import ModalAlert from "../Component/ModalAlert";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-const FILE_SIZE = 10 * 1000 * 1000; // 10 Megabyte
+const FILE_SIZE = 10; // 10 Megabyte
 const SUPPORTED_FORMATS = "application/pdf";
+const SUPPORTED_FORMATS_2 = [
+  "image/jpg",
+  "image/jpeg",
+  "image/gif",
+  "image/png",
+];
 
 export default function AddBook() {
   const [state] = useContext(LoginContext);
@@ -40,29 +45,43 @@ export default function AddBook() {
       isbn: "",
       author: "",
       file: null,
+      thumbnail: null,
     },
 
     validationSchema: yup.object().shape({
       title: yup.string().required("Title is required").min(3, "Too short"),
       publication: yup.string().required("Publication date is required"),
       pages: yup.string().required("Pages number is required"),
-      isbn: yup
+      isbn: yup.string().required("ISBN number is required"),
+      author: yup
         .string()
-        .required("ISBN number is required")
-        .min(6, "Too short"),
-      author: yup.string().required("Author Name is required"),
+        .required("Author Name is required")
+        .min(3, "Too short"),
       file: yup
         .mixed()
-        .required("A file is required")
+        .required("Don't forget to attache literature file ..")
         .test(
           "fileSize",
-          "File too large, 10mb maximum",
-          (value) => value && value.size <= FILE_SIZE
+          `File too large, ${FILE_SIZE}mb maximum`,
+          (value) => value && value.size <= FILE_SIZE * 1000000
         )
         .test(
           "fileFormat",
           "Unsupported Format",
           (value) => value && SUPPORTED_FORMATS.includes(value.type)
+        ),
+      thumbnail: yup
+        .mixed()
+        .required("Don't forget to attache literature cover ..")
+        .test(
+          "fileSize",
+          `File too large, ${FILE_SIZE}mb maximum`,
+          (value) => value && value.size <= FILE_SIZE * 1000000
+        )
+        .test(
+          "fileFormat",
+          "Unsupported Format",
+          (value) => value && SUPPORTED_FORMATS_2.includes(value.type)
         ),
     }),
 
@@ -88,6 +107,7 @@ export default function AddBook() {
       body.append("isbn", value.isbn);
       body.append("author", value.author);
       body.append("file", value.file);
+      body.append("thumbnail", value.thumbnail);
       body.append(
         "status",
         state.userData.role === "Admin" ? "Approved" : "Waiting to be verified"
@@ -122,8 +142,8 @@ export default function AddBook() {
   }
 
   return (
-    <div className="container-xl text-white">
-      <form onSubmit={handleSubmit}>
+    <div className="container-xl text-white mb-3">
+      <form autoComplete="off" onSubmit={handleSubmit}>
         <br />
         <div className="form-group">
           <h3 className="list-title" style={{ paddingLeft: 0 }}>
@@ -161,33 +181,61 @@ export default function AddBook() {
         <CustomInput
           type="text"
           name="author"
-          placeholder="Author Name, Ex: Mas irwanto"
+          placeholder="Author Name, Ex: Irwanto Wibowo"
           {...getFieldProps("author")}
           error={touched.author ? errors.author : ""}
         />
-        <div className="custom-file" style={{ marginBottom: 30 }}>
-          <input
-            type="file"
-            name="file"
-            id="custom-input"
-            className="custom-file-input"
-            accept=".pdf"
-            onChange={handleChangeFile}
-            onBlur={handleBlur}
-            touched={touched["file"]}
-          />
-          <label
-            id="custom-input"
-            onBlur={handleBlur}
-            className="custom-file-label"
-          >
-            {!values.file
-              ? "Attache Literature File (Only Pdf Supported)"
-              : values.file.name}
-          </label>
-          <span className="help-block text-danger">
-            {touched.file ? errors.file : ""}
-          </span>
+        <div className="form-group">
+          <div className="custom-file">
+            <input
+              type="file"
+              name="file"
+              id="custom-input"
+              className="custom-file-input"
+              accept=".pdf"
+              onChange={handleChangeFile}
+              onBlur={handleBlur}
+              touched={touched["file"]}
+            />
+            <label
+              id="custom-input"
+              onBlur={handleBlur}
+              className="custom-file-label"
+            >
+              {!values.file
+                ? "Attache Literature File (Only Pdf Supported)"
+                : values.file.name}
+            </label>
+            <span className="help-block text-danger">
+              {touched.file ? errors.file : ""}
+            </span>
+          </div>
+        </div>
+        <div className="form-group">
+          <div className="custom-file">
+            <input
+              type="file"
+              name="thumbnail"
+              id="custom-input"
+              className="custom-file-input"
+              accept="image/*"
+              onChange={handleChangeFile}
+              onBlur={handleBlur}
+              touched={touched["thumbnail"]}
+            />
+            <label
+              id="custom-input"
+              onBlur={handleBlur}
+              className="custom-file-label"
+            >
+              {!values.thumbnail
+                ? "Attache Cover (Image only)"
+                : values.thumbnail.name}
+            </label>
+            <span className="help-block text-danger">
+              {touched.thumbnail ? errors.thumbnail : ""}
+            </span>
+          </div>
         </div>
         {isLoading ? (
           <LoadingScreen size="2.5rem" />
@@ -201,20 +249,7 @@ export default function AddBook() {
           </button>
         )}
       </form>
-      <Modal
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        show={modalState.show}
-        onHide={() => setModal({ ...modalState, show: false })}
-      >
-        <div
-          className={`alert ${modalState.alertType}`}
-          style={{ margin: 10, textAlign: "center" }}
-        >
-          <h4>{modalState.message}</h4>
-        </div>
-      </Modal>
+      <ModalAlert modal={modalState} setModal={setModal} />
     </div>
   );
 }

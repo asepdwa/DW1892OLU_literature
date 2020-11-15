@@ -59,7 +59,7 @@ export default function LpButton() {
         show={SignIn}
         onHide={() => setSignIn(false)}
       >
-        <Modal.Body id="sign">
+        <Modal.Body id="custom">
           <SignInForm Modal={handleSignUp} />
         </Modal.Body>
       </Modal>
@@ -70,7 +70,7 @@ export default function LpButton() {
         show={SignUp}
         onHide={() => setSignUp(false)}
       >
-        <Modal.Body id="sign">
+        <Modal.Body id="custom">
           <SignUpForm Modal={handleSignIn} />
         </Modal.Body>
       </Modal>
