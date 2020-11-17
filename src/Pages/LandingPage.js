@@ -3,17 +3,15 @@ import LandingPageButton from "../Component/LandingPageButton";
 import Navbar from "../Component/Navbar";
 
 const imgContent = {
-  width: "90%",
+  width: 550,
   height: "auto",
-  marginTop: -40,
-  marginLeft: -30,
 };
 
 export default function LandingPage() {
   return (
     <>
       <Navbar />
-      <div className="container-fluid mb-4 text-white">
+      <div className="container-xl mb-4 text-white">
         <div className="row">
           <div className="col-sm-6">
             <div className="lp-left">

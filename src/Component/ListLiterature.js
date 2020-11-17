@@ -20,18 +20,20 @@ export default function ListLiterature(props) {
     uploader,
     sort,
     order,
+    query,
   } = props;
 
   const { loading, error, data: literatures, refetch } = useQuery(
-    `getLiteraturesData`,
+    query,
     async () =>
-      await API.get(
+      !collection &&
+      (await API.get(
         `/literatures?from=${from || ""}&to=${to || ""}&q=${
           searchKeyword || ""
         }&status=${status || ""}&uploader=${uploader || ""}&sort=${
           sort || ""
         }&order=${order || ""}`
-      )
+      ))
   );
 
   useEffect(() => {
@@ -90,7 +92,7 @@ export default function ListLiterature(props) {
     }
   );
 
-  if (loading || !literatures) {
+  if (!collection && (loading || !literatures)) {
     return error ? <h1>error {error.message} </h1> : <LoadingScreen />;
   } else {
     let datas = !collection

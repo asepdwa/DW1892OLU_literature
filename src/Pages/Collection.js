@@ -9,7 +9,7 @@ export default function Collection() {
           <h4 className="list-title">My Collection</h4>
         </div>
       </div>
-      <ListLiterature collection={true} />
+      <ListLiterature query="getLiteratures" collection={true} />
     </div>
   );
 }

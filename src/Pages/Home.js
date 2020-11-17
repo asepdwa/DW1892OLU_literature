@@ -20,28 +20,12 @@ export default function Home() {
       {!searchData.submit ? (
         <center>
           <br />
-          <h3
-            className="mt-4"
-            style={{
-              fontFamily: "Times New Roman",
-              fontSize: 65,
-              fontStyle: "italic",
-              fontWeight: 700,
-            }}
-          >
-            literature
-            <img
-              style={{
-                marginLeft: -12,
-                marginTop: -75,
-                width: 150,
-                height: 150,
-              }}
-              src="quill-drawing-a-line.png"
-              alt="icon"
-            />
-            <br />
-          </h3>
+          <img
+            src="logo.png"
+            alt="icon"
+            style={{ marginBottom: 10, width: 400, height: "auto" }}
+          />
+          <br />
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -98,7 +82,7 @@ export default function Home() {
               className="d-flex justify-content-start mb-3"
               style={{ marginLeft: -10 }}
             >
-              <div className="p-2">
+              <div className="d-flex align-items-start">
                 <input
                   placeholder="Search for literature"
                   className="form-control"
@@ -107,6 +91,7 @@ export default function Home() {
                     width: 375,
                     background: `rgba(${"210, 210, 210, 0.25"})`,
                     color: "white",
+                    marginRight: 10,
                   }}
                   onChange={(e) =>
                     setSearchData({ ...searchData, keyword: e.target.value })
@@ -114,8 +99,6 @@ export default function Home() {
                   value={searchData.keyword}
                   type="text"
                 />
-              </div>
-              <div className="p-2">
                 <button
                   className="btn btn-danger"
                   style={{ background: "#af2e1c" }}
@@ -188,7 +171,7 @@ export default function Home() {
 
             <div className="col-10">
               <ListLiterature
-                query="literatures"
+                query={`getLiteraturesQ=${searchData.submitted_keyword}`}
                 status="Approved"
                 from={searchData.submitted_from}
                 to={searchData.submitted_to}

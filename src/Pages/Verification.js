@@ -24,7 +24,7 @@ const blankLiteratureTable = [
 
 export default function Verification() {
   const [filterStatus, setFilterStatus] = useState("");
-  const { isLoading, error, data: literatures, refetch } = useQuery(
+  const { isLoading, error, data: literatures, refetch, isFetching } = useQuery(
     "getLiteraturesData",
     async () => await API.get(`/literatures?status=${filterStatus}`)
   );
@@ -98,6 +98,7 @@ export default function Verification() {
           <div className="col-8">
             <h4 className="list-title">Literatures Verification</h4>
           </div>
+
           <div className="col-4">
             <div className="float-right">
               <DropdownButton
@@ -127,128 +128,131 @@ export default function Verification() {
             </div>
           </div>
         </div>
-        <div className="table-responsive">
-          <table className="table table-dark table-striped table-md mt-4">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Uploader</th>
-                <th>ISBN</th>
-                <th>E-book</th>
-                <th>Status</th>
-                <th>
-                  <center>Action</center>
-                </th>
-                <th>
-                  <center>Delete</center>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {datas.length > 0 ? (
-                datas.map((literature, index) => (
-                  <tr>
-                    <td>{index + 1}</td>
-                    <td>{literature.uploader.fullName}</td>
-                    <td>{literature.isbn}</td>
-                    <td style={{ fontSize: 12, fontWeight: 700 }}>
-                      <Link to={`/Detail/${literature.id}`}>
-                        {literature.fileUrl
-                          .split("/")
-                          [literature.fileUrl.split("/").length - 1].substring(
-                            0,
-                            40
-                          )}
-                      </Link>
-                    </td>
-                    {literature.status === "Approved" ? (
-                      <>
-                        <td
-                          className="text-success"
-                          style={{ fontSize: 12, fontWeight: 700 }}
-                        >
-                          {literature.status}
-                        </td>
-                        <td>
-                          <center>
-                            <FcApproval size="30" />
-                          </center>
-                        </td>
-                      </>
-                    ) : (
-                      <>
-                        <td
-                          className={
-                            literature.status === "Canceled"
-                              ? "text-danger"
-                              : "text-warning"
-                          }
-                          style={{ fontSize: 12, fontWeight: 700 }}
-                        >
-                          {literature.status}
-                        </td>
-                        <td>
-                          <center>
-                            {literature.status !== "Canceled" && (
+        {isFetching ? (
+          <LoadingScreen />
+        ) : (
+          <div className="table-responsive">
+            <table className="table table-dark table-striped table-md mt-4">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Uploader</th>
+                  <th>ISBN</th>
+                  <th>E-book</th>
+                  <th>Status</th>
+                  <th>
+                    <center>Action</center>
+                  </th>
+                  <th>
+                    <center>Delete</center>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {datas.length > 0 ? (
+                  datas.map((literature, index) => (
+                    <tr>
+                      <td>{index + 1}</td>
+                      <td>{literature.uploader.fullName}</td>
+                      <td>{literature.isbn}</td>
+                      <td style={{ fontSize: 12, fontWeight: 700 }}>
+                        <Link to={`/Detail/${literature.id}`}>
+                          {literature.fileUrl
+                            .split("/")
+                            [
+                              literature.fileUrl.split("/").length - 1
+                            ].substring(0, 40)}
+                        </Link>
+                      </td>
+                      {literature.status === "Approved" ? (
+                        <>
+                          <td
+                            className="text-success"
+                            style={{ fontSize: 12, fontWeight: 700 }}
+                          >
+                            {literature.status}
+                          </td>
+                          <td>
+                            <center>
+                              <FcApproval size="30" />
+                            </center>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td
+                            className={
+                              literature.status === "Canceled"
+                                ? "text-danger"
+                                : "text-warning"
+                            }
+                            style={{ fontSize: 12, fontWeight: 700 }}
+                          >
+                            {literature.status}
+                          </td>
+                          <td>
+                            <center>
+                              {literature.status !== "Canceled" && (
+                                <button
+                                  onClick={() =>
+                                    handleActionConfirm({
+                                      id: literature.id,
+                                      action: "patch",
+                                      status: "Canceled",
+                                      message: "Are you sure want to cancel ?",
+                                    })
+                                  }
+                                  className="btn btn-danger"
+                                >
+                                  Cancel
+                                </button>
+                              )}{" "}
                               <button
                                 onClick={() =>
                                   handleActionConfirm({
                                     id: literature.id,
                                     action: "patch",
-                                    status: "Canceled",
-                                    message: "Are you sure want to cancel ?",
+                                    status: "Approved",
+                                    message: "Are you sure want to approve ?",
                                   })
                                 }
-                                className="btn btn-danger"
+                                className="btn btn-success"
                               >
-                                Cancel
+                                Approve
                               </button>
-                            )}{" "}
-                            <button
-                              onClick={() =>
-                                handleActionConfirm({
-                                  id: literature.id,
-                                  action: "patch",
-                                  status: "Approved",
-                                  message: "Are you sure want to approve ?",
-                                })
-                              }
-                              className="btn btn-success"
-                            >
-                              Approve
-                            </button>
-                          </center>
-                        </td>
-                      </>
-                    )}
-                    <td>
-                      <center>
-                        <button
-                          onClick={() =>
-                            handleActionConfirm({
-                              id: literature.id,
-                              action: "remove",
-                              message: "Are you sure want to remove ?",
-                            })
-                          }
-                          className="btn btn-secondary"
-                        >
-                          <FaTrashAlt />
-                        </button>
-                      </center>
-                    </td>
+                            </center>
+                          </td>
+                        </>
+                      )}
+                      <td>
+                        <center>
+                          <button
+                            onClick={() =>
+                              handleActionConfirm({
+                                id: literature.id,
+                                action: "remove",
+                                message: "Are you sure want to remove ?",
+                              })
+                            }
+                            className="btn btn-secondary"
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        </center>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    {blankLiteratureTable.map((data, index) => (
+                      <td>{data}</td>
+                    ))}
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  {blankLiteratureTable.map((data, index) => (
-                    <td>{data}</td>
-                  ))}
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
         <ModalAlert modal={modalState} setModal={setModal} />
         <ModalConfirm
           modal={modalConfirmState}

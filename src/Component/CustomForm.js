@@ -21,6 +21,32 @@ export function CustomInput(props) {
   );
 }
 
+export function CustomInputFile(props) {
+  const { touched_check, file, errors, placeholder } = props;
+  return (
+    <div className="form-group">
+      <div className="custom-file">
+        <input
+          type="file"
+          id="custom-input"
+          className="custom-file-input"
+          {...props}
+        />
+        <label
+          id="custom-input"
+          onBlur={props.onBlur}
+          className="custom-file-label"
+        >
+          {!file ? placeholder : file.name}
+        </label>
+        <span className="help-block text-danger">
+          {touched_check ? errors : ""}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function CustomInputPassword(props) {
   const [showPassword, setShowPassword] = useState(false);
   return (

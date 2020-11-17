@@ -4,49 +4,66 @@ import { Modal } from "react-bootstrap";
 import { MdEmail } from "react-icons/md";
 import { FaTransgender, FaPhoneAlt, FaLink } from "react-icons/fa";
 import { ImLocation } from "react-icons/im";
+
 import { API } from "../Config/Api";
 import { LoginContext } from "../Context/Login";
 import ListLiterature from "../Component/ListLiterature";
+import ImageCropper from "../Component/Cropper";
 
 export default function Profile() {
   const [state, dispatch] = useContext(LoginContext);
-  const [avatarModal, setAvatarModal] = useState(false);
-  const [avatar, setAvatar] = useState(null);
-  const [formUpload, setFormUpload] = useState(true);
+  const [avatar, setAvatar] = useState({
+    file: null,
+    blob: null,
+    upload: true,
+    modal: false,
+  });
 
   const handleChange = (e) => {
-    e.target.type === "file"
-      ? setAvatar(e.target.files[0])
-      : setAvatar(e.target.value);
+    if (
+      e.target.files &&
+      e.target.files.length > 0 &&
+      e.target.files[0].type.match("image")
+    ) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.addEventListener(
+        "load",
+        () => {
+          setAvatar({
+            ...avatar,
+            file: reader.result,
+          });
+        },
+        false
+      );
+
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    } else {
+      setAvatar({ ...avatar, file: e.target.value });
+    }
+  };
+
+  const getBlob = (blob) => {
+    setAvatar({ ...avatar, blob });
   };
 
   const changeAvatar = async () => {
-    if (!avatar) return alert("Select an Image file to change");
-
     try {
-      if (formUpload) {
-        const config = {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        };
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
 
-        let body = new FormData();
-        body.append("avatar", avatar);
+      let body = new FormData();
+      body.append("avatar", avatar.blob);
 
-        const res = await API.patch(`/avatar`, body, config);
-        alert(res.data.message);
-      } else {
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-
-        const body = JSON.stringify({ photoUrl: avatar });
-        const res = await API.patch(`/user/${state.userData.id}`, body, config);
-        alert(res.data.message);
-      }
+      const res = await API.patch(`/avatar`, body, config);
+      alert(res.data.message);
 
       try {
         const resAuth = await API.get("/auth");
@@ -70,7 +87,7 @@ export default function Profile() {
     <div className="container-xl text-white mt-4 mb-4">
       <div className="ProfileBox">
         <div className="row">
-          <div className="col-sm-8" style={{ paddingLeft: 30 }}>
+          <div className="col-8" style={{ paddingLeft: 30 }}>
             <div className="Profilee">
               <MdEmail
                 size="30"
@@ -128,116 +145,121 @@ export default function Profile() {
               </div>
             </div>
           </div>
-          <div className="col-sm-4">
-            <img
-              src={state.userData.photoUrl}
-              alt={state.userData.fullName}
-              style={{
-                width: "60%",
-                height: "auto",
-                margin: "auto",
-                display: "block",
-                borderRadius: "10%",
-              }}
-            />
-            <button className="btn-custom" onClick={() => setAvatarModal(true)}>
-              Change Photo Profile
-            </button>
-            <Modal
-              size="md"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-              show={avatarModal}
-              onHide={() => setAvatarModal(false)}
-            >
-              <Modal.Body id="custom">
-                <div className="row">
-                  <div className="col-sm-8">
-                    <div className="row">
-                      <div className="col-9">
-                        <div className="form-group">
-                          {formUpload ? (
-                            <>
-                              <input
-                                type="file"
-                                className="form-control-file"
-                                name="avatar"
-                                id="avatar"
-                                accept="image/*"
-                                onChange={(e) => handleChange(e)}
-                                style={{ display: "none" }}
-                              />
-                              <label
-                                for="avatar"
-                                className="btn btn-danger btn-block"
-                                style={{ background: "#AF2E1C" }}
-                              >
-                                Attache Photo Profile
-                              </label>
-                            </>
-                          ) : (
-                            <input
-                              className="form-control"
-                              type="text"
-                              name="avatar"
-                              id="avatar"
-                              placeholder="Enter photo profile URL"
-                              onChange={(e) => handleChange(e)}
-                            />
-                          )}
-                        </div>
-                      </div>
-                      <div className="col-2" style={{ marginRight: 20 }}>
-                        <button
-                          className="btn btn-danger"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setAvatar(null);
-                            setFormUpload(formUpload ? false : true);
-                          }}
-                          style={{ background: "#AF2E1C" }}
-                        >
-                          {formUpload ? (
-                            <FaLink size="22" />
-                          ) : (
-                            <FaRegFileImage size="22" />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      className="btn btn-danger btn-block mt-1 mb-4"
-                      onClick={() => changeAvatar()}
-                      style={{ background: "#AF2E1C" }}
-                    >
-                      Change Photo Profile
-                    </button>
-                  </div>
-                  <div className="col-sm-4">
-                    <img
-                      src={
-                        avatar
-                          ? formUpload
-                            ? URL.createObjectURL(avatar)
-                            : avatar
-                          : state.userData.photoUrl
-                      }
-                      alt="Enter Valid Url"
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        float: "right",
-                      }}
-                    />
-                  </div>
-                </div>
-              </Modal.Body>
-            </Modal>
+          <div className="col-4">
+            <div className="float-right" style={{ marginRight: 30 }}>
+              <img
+                src={state.userData.photoUrl}
+                alt={state.userData.fullName}
+                style={{
+                  width: 200,
+                  height: "auto",
+                  margin: "auto",
+                  borderRadius: "100%",
+                }}
+              />
+              <button
+                className="btn-custom"
+                style={{ width: 200 }}
+                onClick={() =>
+                  setAvatar({
+                    file: null,
+                    blob: null,
+                    upload: true,
+                    modal: true,
+                  })
+                }
+              >
+                Change Photo Profile
+              </button>
+            </div>
           </div>
         </div>
       </div>
       <h4 className="list-title mt-4">My Literature</h4>
-      <ListLiterature query="literatures" uploader={state.userData.id} />
+      <ListLiterature
+        query={`getLiteraturesByUploader?uploader=${state.userData.id}`}
+        uploader={state.userData.id}
+      />
+      <Modal
+        aria-labelledby="contained-modal-title-vcenter"
+        show={avatar.modal}
+        onHide={() => setAvatar({ ...avatar, modal: false })}
+        centered
+      >
+        <Modal.Body id="custom">
+          {avatar.file && (
+            <center>
+              <ImageCropper
+                getBlob={getBlob}
+                inputImg={avatar.file}
+                aspect={1}
+                shape="round"
+                size={{ width: 350, height: 350 }}
+                resize={{ width: 200, height: 200 }}
+              />
+              <br />
+            </center>
+          )}
+          <div class="d-flex flex-row justify-content-center mb-1">
+            <div class="p-2 flex-fill bd-highlight">
+              {avatar.upload ? (
+                <>
+                  <input
+                    type="file"
+                    className="form-control-file"
+                    name="avatar"
+                    id="avatar"
+                    accept="image/*"
+                    onChange={(e) => handleChange(e)}
+                    style={{ display: "none" }}
+                  />
+                  <label
+                    for="avatar"
+                    className="btn btn-danger btn-block"
+                    style={{ background: "#AF2E1C" }}
+                  >
+                    Attache Photo Profile
+                  </label>
+                </>
+              ) : (
+                <input
+                  className="form-control"
+                  type="text"
+                  name="avatar"
+                  id="avatar"
+                  placeholder="Enter photo profile URL"
+                  onChange={(e) => handleChange(e)}
+                />
+              )}
+            </div>
+            <div class="p-2 bd-highlight">
+              <button
+                className="btn btn-danger"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setAvatar({ ...avatar, upload: !avatar.upload });
+                }}
+                style={{ background: "#AF2E1C" }}
+              >
+                {avatar.upload ? (
+                  <FaLink size="22" />
+                ) : (
+                  <FaRegFileImage size="22" />
+                )}
+              </button>
+            </div>
+          </div>
+          <div class="d-flex flex-row justify-content-center mb-3">
+            <button
+              className="btn btn-danger mt-1"
+              onClick={() => changeAvatar()}
+              style={{ background: "#AF2E1C", width: "95%" }}
+            >
+              Save Change
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

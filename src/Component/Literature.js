@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const style_X = {
   position: "absolute",
   top: 5,
-  left: "73%",
+  left: "78%",
   backgroundColor: "#555",
   color: "white",
   fontSize: 16,
@@ -50,8 +50,14 @@ export default function Literature(props) {
         >
           <h4 className="mt-4">{literature.title}</h4>
           <div className="row">
-            <p className="col">{literature.author}</p>
-            <p className="col">{literature.publication.substring(0, 4)}</p>
+            <p className="col-8">
+              <div className="float-left">{literature.author}</div>
+            </p>
+            <p className="col">
+              <div className="float-right">
+                {literature.publication.substring(0, 4)}
+              </div>
+            </p>
           </div>
         </Link>
       </div>

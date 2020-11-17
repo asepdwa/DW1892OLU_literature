@@ -5,7 +5,7 @@ import { BiBookAdd } from "react-icons/bi";
 import { API } from "../Config/Api";
 import { LoginContext } from "../Context/Login";
 
-import { CustomInput } from "../Component/CustomForm";
+import { CustomInput, CustomInputFile } from "../Component/CustomForm";
 import LoadingScreen from "../Component/LoadingScreen";
 import ModalAlert from "../Component/ModalAlert";
 
@@ -143,7 +143,7 @@ export default function AddBook() {
 
   return (
     <div className="container-xl text-white mb-3">
-      <form autoComplete="off" onSubmit={handleSubmit}>
+      <form autoComplete="off" onSubmit={handleSubmit} className="mb-3">
         <br />
         <div className="form-group">
           <h3 className="list-title" style={{ paddingLeft: 0 }}>
@@ -185,58 +185,29 @@ export default function AddBook() {
           {...getFieldProps("author")}
           error={touched.author ? errors.author : ""}
         />
-        <div className="form-group">
-          <div className="custom-file">
-            <input
-              type="file"
-              name="file"
-              id="custom-input"
-              className="custom-file-input"
-              accept=".pdf"
-              onChange={handleChangeFile}
-              onBlur={handleBlur}
-              touched={touched["file"]}
-            />
-            <label
-              id="custom-input"
-              onBlur={handleBlur}
-              className="custom-file-label"
-            >
-              {!values.file
-                ? "Attache Literature File (Only Pdf Supported)"
-                : values.file.name}
-            </label>
-            <span className="help-block text-danger">
-              {touched.file ? errors.file : ""}
-            </span>
-          </div>
-        </div>
-        <div className="form-group">
-          <div className="custom-file">
-            <input
-              type="file"
-              name="thumbnail"
-              id="custom-input"
-              className="custom-file-input"
-              accept="image/*"
-              onChange={handleChangeFile}
-              onBlur={handleBlur}
-              touched={touched["thumbnail"]}
-            />
-            <label
-              id="custom-input"
-              onBlur={handleBlur}
-              className="custom-file-label"
-            >
-              {!values.thumbnail
-                ? "Attache Cover (Image only)"
-                : values.thumbnail.name}
-            </label>
-            <span className="help-block text-danger">
-              {touched.thumbnail ? errors.thumbnail : ""}
-            </span>
-          </div>
-        </div>
+        <CustomInputFile
+          name="file"
+          accept=".pdf"
+          onChange={handleChangeFile}
+          onBlur={handleBlur}
+          touched={touched["file"]}
+          touched_check={touched.file}
+          errors={errors.file}
+          placeholder="Attache Literature File
+        (Only PDF File Supported)"
+          file={values.file}
+        />
+        <CustomInputFile
+          name="thumbnail"
+          accept="image/*"
+          onChange={handleChangeFile}
+          onBlur={handleBlur}
+          touched={touched["thumbnail"]}
+          touched_check={touched.thumbnail}
+          errors={errors.thumbnail}
+          placeholder="Attache Cover (Image only)"
+          file={values.thumbnail}
+        />
         {isLoading ? (
           <LoadingScreen size="2.5rem" />
         ) : (

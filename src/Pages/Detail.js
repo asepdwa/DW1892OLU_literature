@@ -79,9 +79,7 @@ export default function Detail() {
 
   const removeFromMyCollection = async () => {
     try {
-      const res = await API.delete(
-        `/collection?UserId=${state.userData.id}&LiteratureId=${parseInt(id)}`
-      );
+      const res = await API.delete(`/collection/${parseInt(id)}`);
 
       try {
         const resAuth = await API.get("/auth");

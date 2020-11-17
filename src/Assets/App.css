@@ -10,6 +10,10 @@
   font-style: normal;
 }
 
+.modal-avatar {
+  width: 360px;
+}
+
 .App {
   position: absolute;
   width: 100%;
@@ -35,9 +39,6 @@
 }
 
 .lp-left {
-  margin: auto;
-  display: block;
-  width: 80%;
   margin-top: 150px;
 }
 
@@ -132,7 +133,7 @@
 }
 
 .btn-custom {
-  width: 65%;
+  width: 200;
   height: 40px;
   margin: auto;
   margin-top: 10px;
