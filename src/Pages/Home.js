@@ -109,7 +109,7 @@ export default function Home() {
             </div>
           </form>
           <div className="row">
-            <div className="col-2">
+            <div className="col-sm-2">
               <p
                 style={{
                   textAlign: "center",
@@ -124,10 +124,11 @@ export default function Home() {
               <Accordion>
                 <Card>
                   <Accordion.Toggle as={Card.Header} eventKey="0">
-                    Filter by Year <BiChevronDownCircle size="20px" />
+                    Filter <BiChevronDownCircle size="20px" />
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="0">
                     <Card.Body>
+                      <p style={{ textAlign: "center" }}>Year Publication</p>
                       <div className="row" style={{ padding: 0 }}>
                         <div className="col">
                           <input

@@ -114,7 +114,7 @@ export default function Detail() {
     return error ? (
       <h1>error {error.message} </h1>
     ) : (
-      <div className="container-xl text-white mb-2">
+      <div className="container-xl text-white mb-2 mt-3">
         <div className="row">
           <div className="col-sm-4">
             <img
@@ -125,7 +125,6 @@ export default function Detail() {
           </div>
           <div className="col-sm-6">
             <h3
-              contenteditable="true"
               style={{
                 fontSize: 45,
                 fontFamily: "Times New Roman",

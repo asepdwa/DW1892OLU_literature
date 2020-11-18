@@ -21,6 +21,33 @@ export function CustomInput(props) {
   );
 }
 
+export function CustomInputGroup(props) {
+  return (
+    <div className="form-group" style={{ marginTop: 20 }}>
+      <div class="input-group">
+        <input
+          id="custom-input"
+          className={
+            props.value
+              ? props.error
+                ? "form-control is-invalid"
+                : "form-control is-valid"
+              : "form-control"
+          }
+          style={props.style}
+          {...props}
+        />
+        <div class="input-group-append">
+          <button class="btn btn-light" type="button" onClick={props.action}>
+            {props.actionName}
+          </button>
+        </div>
+      </div>
+      <span className="help-block text-danger">{props.error}</span>
+    </div>
+  );
+}
+
 export function CustomInputFile(props) {
   const { touched_check, file, errors, placeholder } = props;
   return (

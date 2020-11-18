@@ -103,14 +103,18 @@ export default function Verification() {
             <div className="float-right">
               <DropdownButton
                 variant="secondary"
-                id="dropdown-basic"
-                title={filterStatus === "" ? "Filter Status" : filterStatus}
+                id={`dropdown-variants-secondary`}
+                title={
+                  "Filter Status: " +
+                  (filterStatus === "" ? "All" : filterStatus)
+                }
               >
                 <Dropdown.Header>Select filter status</Dropdown.Header>
                 <Dropdown.Item
                   onClick={() => {
                     setFilterStatus("");
                   }}
+                  {...(filterStatus === "" ? { active: true } : {})}
                 >
                   All
                 </Dropdown.Item>
@@ -120,6 +124,7 @@ export default function Verification() {
                     onClick={() => {
                       setFilterStatus(filter);
                     }}
+                    {...(filter === filterStatus ? { active: true } : {})}
                   >
                     {filter}
                   </Dropdown.Item>
