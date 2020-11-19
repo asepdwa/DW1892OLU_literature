@@ -20,7 +20,7 @@ export default function Detail() {
   const { id } = useParams();
 
   const { loading, error, data: literature } = useQuery(
-    "getLiteratureDetail",
+    `getLiteratureDetailWithID=${id}`,
     async () => await API.get(`/literature/${id}`)
   );
 
