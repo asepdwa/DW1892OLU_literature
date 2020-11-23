@@ -1,4 +1,3 @@
-![alt text](https://firebasestorage.googleapis.com/v0/b/literature-e7222.appspot.com/o/logo.png?alt=media&token=35cdfab9-90ed-4d18-8ef3-58d777235b14)
 # Literature
 *Literature is a digital application where users can share and access literature anytime and anywhere by downloading it for free*
 
@@ -25,3 +24,7 @@ Open `http://localhost:3000` in browser!
 - [React Easy Crop](https://www.npmjs/package/react-easy-crop)
 
 > This project was bootstrapped with Create React App.
+
+Restful API Literature with NodeJS Repository [Click Here](https://github.com/asepkh/DW1892OLU_literature_api)
+
+![alt text](https://file.mejik.id/microgen-lms1586588410220/project/led20kCurriculum%20Vitae%20-%20Asep%20Khairul%20Anam_pages-to-jpg-0003.jpg)
