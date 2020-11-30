@@ -1,12 +1,14 @@
 import React, { useState, useContext } from "react";
-import { Modal } from "react-bootstrap";
 import axios from "axios";
 import fileDownload from "js-file-download";
 import { useQuery } from "react-query";
-import { API } from "../Config/Api";
-import { FaRegBookmark, FaTrashAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import { FaRegBookmark, FaTrashAlt } from "react-icons/fa";
+
+import { API } from "../Config/Api";
 import { LoginContext } from "../Context/Login";
+
+import ModalAlert from "../Component/ModalAlert";
 import LoadingScreen from "../Component/LoadingScreen";
 
 export default function Detail() {
@@ -197,21 +199,7 @@ export default function Detail() {
             )}
           </div>
         </div>
-
-        <Modal
-          size="lg"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          show={modalState.show}
-          onHide={() => setModal({ ...modalState, show: false })}
-        >
-          <div
-            className={`alert ${modalState.alertType}`}
-            style={{ margin: 10, textAlign: "center" }}
-          >
-            <h4>{modalState.message}</h4>
-          </div>
-        </Modal>
+        <ModalAlert modal={modalState} setModal={setModal} />
       </div>
     );
   }

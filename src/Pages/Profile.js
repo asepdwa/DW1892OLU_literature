@@ -145,8 +145,8 @@ export default function Profile() {
               </div>
             </div>
           </div>
-          <div className="col-4">
-            <div className="float-right" style={{ marginRight: 30 }}>
+          <div className="col-sm-4">
+            <center>
               <img
                 src={state.userData.photoUrl}
                 alt={state.userData.fullName}
@@ -171,7 +171,7 @@ export default function Profile() {
               >
                 Change Photo Profile
               </button>
-            </div>
+            </center>
           </div>
         </div>
       </div>

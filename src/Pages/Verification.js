@@ -143,7 +143,7 @@ export default function Verification() {
                   <th>No</th>
                   <th>Uploader</th>
                   <th>ISBN</th>
-                  <th>E-book</th>
+                  <th>Literature</th>
                   <th>Status</th>
                   <th>
                     <center>Action</center>
@@ -169,34 +169,36 @@ export default function Verification() {
                             ].substring(0, 40)}
                         </Link>
                       </td>
-                      {literature.status === "Approved" ? (
-                        <>
-                          <td
-                            className="text-success"
-                            style={{ fontSize: 12, fontWeight: 700 }}
-                          >
-                            {literature.status}
-                          </td>
-                          <td>
-                            <center>
-                              <FcApproval size="30" />
-                            </center>
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td
-                            className={
-                              literature.status === "Canceled"
-                                ? "text-danger"
-                                : "text-warning"
-                            }
-                            style={{ fontSize: 12, fontWeight: 700 }}
-                          >
-                            {literature.status}
-                          </td>
-                          <td>
-                            <center>
+                      <td
+                        className={
+                          literature.status === "Approved"
+                            ? "text-success"
+                            : literature.status === "Canceled"
+                            ? "text-danger"
+                            : "text-warning"
+                        }
+                        style={{ fontSize: 12, fontWeight: 700 }}
+                      >
+                        {literature.status}
+                      </td>
+                      <td>
+                        <center>
+                          {literature.status === "Approved" ? (
+                            <button
+                              onClick={() =>
+                                handleActionConfirm({
+                                  id: literature.id,
+                                  action: "patch",
+                                  status: "Waiting to be verified",
+                                  message: "Are you sure want to reset ?",
+                                })
+                              }
+                              className="btn btn-secondary"
+                            >
+                              Reset
+                            </button>
+                          ) : (
+                            <>
                               {literature.status !== "Canceled" && (
                                 <button
                                   onClick={() =>
@@ -225,10 +227,10 @@ export default function Verification() {
                               >
                                 Approve
                               </button>
-                            </center>
-                          </td>
-                        </>
-                      )}
+                            </>
+                          )}
+                        </center>
+                      </td>
                       <td>
                         <center>
                           <button

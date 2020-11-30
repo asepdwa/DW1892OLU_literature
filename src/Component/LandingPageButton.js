@@ -9,18 +9,14 @@ export default function LpButton() {
   const [state] = useContext(LoginContext);
   const history = useHistory();
 
-  const [SignUp, setSignUp] = useState(false);
-  const [SignIn, setSignIn] = useState(false);
+  const [modal, setModal] = useState({
+    signIn: false,
+    signUp: false,
+  });
 
-  const handleSignUp = () => {
-    setSignUp(true);
-    setSignIn(false);
-  };
-
-  const handleSignIn = () => {
-    setSignUp(false);
-    setSignIn(true);
-  };
+  const handleSignUp = () => setModal({ signIn: false, signUp: true });
+  const handleSignIn = () => setModal({ signIn: true, signUp: false });
+  const handleHide = () => setModal({ signIn: false, signUp: false });
 
   return state.isLogin ? (
     <Button
@@ -41,14 +37,14 @@ export default function LpButton() {
           marginBottom: 2,
           fontWeight: 600,
         }}
-        onClick={() => setSignUp(true)}
+        onClick={handleSignUp}
       >
         Sign Up
       </Button>
       <Button
         variant="light"
         style={{ width: 211, marginRight: 10, fontWeight: 600 }}
-        onClick={() => setSignIn(true)}
+        onClick={handleSignIn}
       >
         Sign In
       </Button>
@@ -56,8 +52,8 @@ export default function LpButton() {
         size="md"
         aria-labelledby="contained-modal-title-vcenter"
         centered
-        show={SignIn}
-        onHide={() => setSignIn(false)}
+        show={modal.signIn}
+        onHide={handleHide}
       >
         <Modal.Body id="custom">
           <SignInForm Modal={handleSignUp} />
@@ -67,8 +63,8 @@ export default function LpButton() {
         size="md"
         aria-labelledby="contained-modal-title-vcenter"
         centered
-        show={SignUp}
-        onHide={() => setSignUp(false)}
+        show={modal.signUp}
+        onHide={handleHide}
       >
         <Modal.Body id="custom">
           <SignUpForm Modal={handleSignIn} />

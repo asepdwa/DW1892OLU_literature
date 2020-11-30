@@ -221,7 +221,7 @@ export default function AddBook() {
           name="author"
           placeholder="Author Name, Ex: Irwanto Wibowo"
           actionName={
-            inputDisable.author ? "Enter author name" : "Author as me"
+            inputDisable.author ? "Enter author name" : "Me As Author"
           }
           action={() => {
             setFieldValue(

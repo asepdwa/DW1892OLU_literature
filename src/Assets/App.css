@@ -278,6 +278,7 @@ label {
 input:focus,
 select:focus,
 textarea:focus {
+  border-color: white;
   background-color: #1d1d1d !important;
   color: white;
 }
@@ -320,7 +321,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .form-control:disabled,
 .form-control[readonly] {
-  background-color: #727272;
+  background-color: #727272 !important;
 }
 
 .card {
