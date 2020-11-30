@@ -39,19 +39,11 @@ export default function Detail() {
       });
   };
 
-  const AddToMyCollection = async () => {
+  const handleCollection = async (isDelete) => {
     try {
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      const body = JSON.stringify({
-        UserId: state.userData.id,
-        LiteratureId: parseInt(id),
-      });
-      const res = await API.post("/collection", body, config);
+      const res = isDelete
+        ? await API.delete(`/collection/${parseInt(id)}`)
+        : await API.post(`/collection/${parseInt(id)}`);
 
       try {
         const resAuth = await API.get("/auth");
@@ -68,38 +60,7 @@ export default function Detail() {
       setModal({
         show: true,
         message: res.data.message,
-        alertType: "alert-success",
-      });
-    } catch (err) {
-      setModal({
-        show: true,
-        message: err.response.data.message,
-        alertType: "alert-danger",
-      });
-    }
-  };
-
-  const removeFromMyCollection = async () => {
-    try {
-      const res = await API.delete(`/collection/${parseInt(id)}`);
-
-      try {
-        const resAuth = await API.get("/auth");
-
-        dispatch({
-          type: "LOAD_USER",
-          payload: resAuth.data.data,
-        });
-      } catch (error) {
-        dispatch({
-          type: "AUTH_ERROR",
-        });
-      }
-
-      setModal({
-        show: true,
-        message: res.data.message,
-        alertType: "alert-warning",
+        alertType: isDelete ? "alert-warning" : "alert-success",
       });
     } catch (err) {
       setModal({
@@ -184,7 +145,7 @@ export default function Detail() {
               <button
                 className="btn-custom"
                 style={{ width: 190, marginTop: 0, marginRight: 10 }}
-                onClick={() => removeFromMyCollection()}
+                onClick={() => handleCollection(true)}
               >
                 Remove Collection <FaTrashAlt />
               </button>
@@ -192,7 +153,7 @@ export default function Detail() {
               <button
                 className="btn-custom"
                 style={{ width: 190, marginTop: 0 }}
-                onClick={() => AddToMyCollection()}
+                onClick={() => handleCollection(false)}
               >
                 Add My Collection <FaRegBookmark />
               </button>
