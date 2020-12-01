@@ -3,7 +3,7 @@
 
 ## Installation
 #### `Step 1` - Clone it!
-	$ git clone https://github.com/asepkh/DW1892OLU_literature
+	$ git clone https://github.com/asepkh/DW1892OLU_literature/production
    
 #### `Step 2` - Go into the project directory and install dependencies
 	$ yarn install
@@ -25,6 +25,6 @@ Open `http://localhost:3000` in browser!
 
 > This project was bootstrapped with Create React App.
 
-Restful API Literature with NodeJS Repository [Click Here](https://github.com/asepkh/DW1892OLU_literature_api)
+Restful API Literature with NodeJS Repository [Click Here](https://github.com/asepkh/DW1892OLU_literature_api/production)
 
 ![alt text](https://file.mejik.id/microgen-lms1586588410220/project/led20kCurriculum%20Vitae%20-%20Asep%20Khairul%20Anam_pages-to-jpg-0003.jpg)
